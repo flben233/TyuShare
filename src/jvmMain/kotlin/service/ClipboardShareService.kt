@@ -9,11 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import util.CommendUtil
-import java.awt.datatransfer.DataFlavor
-import java.awt.datatransfer.Transferable
 
 sealed class ClipboardShareService {
     companion object Default : ClipboardShareService()

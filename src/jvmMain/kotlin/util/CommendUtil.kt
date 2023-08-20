@@ -4,7 +4,6 @@ import cn.hutool.http.HttpUtil
 import config.SERVICE_PORT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import service.ConnectionService
 

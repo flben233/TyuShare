@@ -3,7 +3,6 @@ package model
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import component.tool.SoundStreamMode
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import util.MutableStateSerializer
 

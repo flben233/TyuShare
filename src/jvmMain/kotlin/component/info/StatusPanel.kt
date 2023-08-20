@@ -7,17 +7,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import component.material.Axis
 import component.material.DoubleLineChart
 import component.material.TextWithTitle
 import service.ConnectionService
 import util.HardwareUtil
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 
 @Composable
 fun StatusPanel() {

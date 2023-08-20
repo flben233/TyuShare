@@ -1,5 +1,6 @@
 package view
 
+import Navigator
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import currentView
 import model.ConnectionItem
-import navigateTo
 import service.ConnectionService
 import util.DateUtil
 import util.HardwareUtil
