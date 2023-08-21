@@ -21,11 +21,6 @@ fun MainView() {
             StatusPanel()
         }
         Spacer(Modifier.width(15.dp))
-//        LazyColumn (Modifier.fillMaxHeight().weight(1f)) {
-//            item { SoundStream() }
-//            item { ClipboardShare() }
-//            item { FileTransfer() }
-//        }
         Column (Modifier.fillMaxHeight().weight(1f)) {
             SoundStream(modifier = Modifier.weight(1f))
             ClipboardShare(modifier = Modifier.weight(1f))

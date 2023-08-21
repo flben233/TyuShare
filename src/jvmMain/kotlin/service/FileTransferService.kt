@@ -40,11 +40,11 @@ sealed class FileTransferService {
     fun receiveFile(fileName: String) {
         val client = Socket(ConnectionService.getTargetIp(), filePort)
         CoroutineScope(Dispatchers.Default).launch {
-            val path = File(applicationSetting.fileReceivePath)
+            val path = File(applicationSetting.fileReceivePath.value)
             if (!path.exists()) {
                 path.mkdirs()
             }
-            val dest: OutputStream = FileOutputStream(applicationSetting.fileReceivePath + File.separator + fileName)
+            val dest: OutputStream = FileOutputStream(applicationSetting.fileReceivePath.value + File.separator + fileName)
             val inputStream = client.getInputStream()
             IoUtil.copy(inputStream, dest, 4096, FileStreamProgress())
             inputStream.close()

@@ -49,7 +49,7 @@ fun FileTransfer(modifier: Modifier = Modifier) {
             text = {
                 LinearProgressIndicator(progress = progress.value, Modifier.fillMaxWidth())
                 Spacer(Modifier.height(5.dp))
-                Text("Tips: 接收到的文件放在${applicationSetting.fileReceivePath}")
+                Text("Tips: 接收到的文件放在${applicationSetting.fileReceivePath.value}")
                    },
             confirmButton = {
                 Button(

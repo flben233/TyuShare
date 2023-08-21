@@ -29,7 +29,7 @@ fun SoundStream(modifier: Modifier = Modifier) {
         expended = false
         applicationSetting.soundStreamMode.value = text
         if (applicationSetting.soundStreamStatus.value) {
-            SoundStreamService.restartSoundStream(applicationSetting.soundStreamMode.value) { applicationSetting.soundStreamStatus.value = true }
+            SoundStreamService.restartSoundStream { applicationSetting.soundStreamStatus.value = true }
         }
     }
 
@@ -42,7 +42,7 @@ fun SoundStream(modifier: Modifier = Modifier) {
                 Switch(applicationSetting.soundStreamStatus.value, {
                     applicationSetting.soundStreamStatus.value = it
                     if (it) {
-                        SoundStreamService.startSoundStream(applicationSetting.soundStreamMode.value)
+                        SoundStreamService.startSoundStream()
                     } else {
                         SoundStreamService.stopSoundStream()
                     }

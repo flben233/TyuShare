@@ -1,5 +1,6 @@
 package service
 
+import androidx.compose.ui.window.Notification
 import cn.hutool.core.swing.clipboard.ClipboardUtil
 import cn.hutool.http.HttpUtil
 import cn.hutool.http.server.SimpleServer
@@ -9,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import tray
 import util.CommendUtil
 
 sealed class ClipboardShareService {
@@ -22,7 +24,10 @@ sealed class ClipboardShareService {
             server = HttpUtil.createServer(clipPort)
             serverCoroutine = CoroutineScope(Dispatchers.Default).launch {
                 server!!.addAction("/clipboard") { request, response ->
-                    ClipboardUtil.setStr(request.body)
+                    if (request.body != ClipboardUtil.getStr()) {
+                        ClipboardUtil.setStr(request.body)
+                        tray.sendNotification(Notification("剪贴板", request.body))
+                    }
                     response.sendOk()
                 }
                 server!!.start()
@@ -45,4 +50,5 @@ sealed class ClipboardShareService {
             stopShareServer()
         }
     }
+
 }

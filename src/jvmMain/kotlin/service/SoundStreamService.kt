@@ -19,7 +19,7 @@ sealed class SoundStreamService {
     private var soundThread: Thread? = null
     private val audioFormat = AudioFormat(48000.0f, 16, 2, true, false)
     private var nByte = 0
-    private val bufSize = 32
+    private val bufSize = 128
     private val buffer = ByteArray(bufSize)
 
     companion object Default : SoundStreamService()
@@ -30,15 +30,19 @@ sealed class SoundStreamService {
         })
     }
 
-    fun startSoundStream(mode: String) {
+    fun startSoundStream() {
         CommendUtil.sendCommend(HttpCommend.START_SOUND, callback = {
             client = Socket(ConnectionService.getTargetIp(), SERVICE_PORT + 1)
-            soundThread = if (mode == SoundStreamMode.LISTENER) {
-                playSoundStream(client!!.getInputStream())
-            } else {
-                sendSystemSound(client!!.getOutputStream())
-            }
+            startSound()
         })
+    }
+
+    private fun startSound() {
+        soundThread = if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER) {
+            playSoundStream(client!!.getInputStream())
+        } else {
+            sendSystemSound(client!!.getOutputStream())
+        }
     }
 
     fun closeSocket() {
@@ -54,6 +58,8 @@ sealed class SoundStreamService {
             soundThread = Thread {
                 server = ServerSocket(SERVICE_PORT + 1)
                 client = server!!.accept()
+                startSound()
+                applicationSetting.soundStreamStatus.value = true
             }
             soundThread!!.start()
         } else {
@@ -62,11 +68,11 @@ sealed class SoundStreamService {
         }
     }
 
-    fun restartSoundStream(mode: String, onSuccess: () -> Unit) {
+    fun restartSoundStream(onSuccess: () -> Unit) {
         CommendUtil.sendCommend(HttpCommend.CLOSE_SOUND, callback = {
             if (it) {
                 closeSocket()
-                startSoundStream(mode)
+                startSoundStream()
                 onSuccess()
             }
         })
