@@ -2,7 +2,9 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -41,9 +43,9 @@ fun App(modifier: Modifier = Modifier) {
     }
 }
 
-// TODO: 音频共享还没完善, 代码要优化一下
-// TODO: WinAPI，音频硬件更改
-// TODO: 过渡动画
+
+// TODO: 音频输出自动切换
+// TODO: 窗口阴影还要调一调
 fun main() = application {
     FlatLightLaf.setup()
     val isOpen = remember { mutableStateOf(applicationSetting.defaultOpenWindow.value) }
@@ -60,23 +62,31 @@ fun main() = application {
         title = "小雨妙享",
         icon = painterResource("favicon-64.png"),
         visible = isOpen.value,
-        state = state
+        state = state,
+        transparent = true
     ) {
-        Column {
-            TitleBar(
-                modifier = Modifier.weight(1f),
-                onCloseRequest = {
-                    JsonUtil.toJsonFile("./settings.json", applicationSetting)
-                    isOpen.value = false
-                },
-                onMenuRequest = { showMenu.value = true },
-                onMinimizeRequest = { state.isMinimized = true }
-            )
-            App(Modifier.weight(16f))
-            if (showMenu.value) {
-                SettingDialog {
-                    JsonUtil.toJsonFile("./settings.json", applicationSetting)
-                    showMenu.value = false
+        Surface(
+            modifier = Modifier.padding(10.dp),
+            color = MaterialTheme.colorScheme.background,
+            shape = RoundedCornerShape(5.dp),
+            shadowElevation = 3.dp
+        ) {
+            Column {
+                TitleBar(
+                    modifier = Modifier.weight(1f),
+                    onCloseRequest = {
+                        JsonUtil.toJsonFile("./settings.json", applicationSetting)
+                        isOpen.value = false
+                    },
+                    onMenuRequest = { showMenu.value = true },
+                    onMinimizeRequest = { state.isMinimized = true }
+                )
+                App(Modifier.weight(16f))
+                if (showMenu.value) {
+                    SettingDialog {
+                        JsonUtil.toJsonFile("./settings.json", applicationSetting)
+                        showMenu.value = false
+                    }
                 }
             }
         }
@@ -91,3 +101,7 @@ fun main() = application {
         })
     })
 }
+
+
+
+

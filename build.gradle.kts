@@ -42,7 +42,7 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Exe, TargetFormat.Msi)
             packageName = "TyuShare"
             packageVersion = "1.0.0"
             includeAllModules = true

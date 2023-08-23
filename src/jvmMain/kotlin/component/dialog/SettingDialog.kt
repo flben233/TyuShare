@@ -1,5 +1,9 @@
 package component.dialog
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,8 +25,21 @@ import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import component.material.SwitchWithTag
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.awt.Desktop
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileWriter
+import java.io.InputStreamReader
 import java.net.URI
+import java.nio.file.Files
+import javax.swing.JOptionPane
+import kotlin.io.path.Path
+
+private const val ANIMATION_TIME = 180
 
 @Preview
 @Composable
@@ -34,45 +51,78 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
         }
         showDirectoryPicker = false
     }
-    Dialog(onDismissRequest = onCloseRequest) {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            shape = RoundedCornerShape(15.dp),
-            modifier = Modifier.fillMaxSize().padding(0.dp, 80.dp)
+
+    val visibility = remember { mutableStateOf(false) }
+    LaunchedEffect("setting") {
+        visibility.value = true
+    }
+
+
+    Dialog(onDismissRequest = {
+        CoroutineScope(Dispatchers.Default).launch {
+            exitWithAnimation(visibility) {
+                onCloseRequest()
+            }
+        }
+    }) {
+        AnimatedVisibility(
+            visible = visibility.value,
+            enter = fadeIn(animationSpec = tween(ANIMATION_TIME)),
+            exit = fadeOut(
+                animationSpec = tween(
+                    ANIMATION_TIME
+                )
+            )
         ) {
-            Column(Modifier.padding(15.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.Settings, "")
-                        Spacer(Modifier.width(5.dp))
-                        Text("设置", fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(Modifier.height(10.dp))
-                    Text("系统设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 5.dp))
-                    SwitchWithTag("开机启动", applicationSetting.launchWithSystem.value) {
-                        setAutoLaunch(it)
-                    }
-                    SwitchWithTag("启动后显示程序窗口", applicationSetting.defaultOpenWindow.value) {
-                        applicationSetting.defaultOpenWindow.value = it
-                    }
-                    Text("文件接收设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
-                    Text("文件默认保存位置")
-                    OutlinedButton(onClick = { showDirectoryPicker = true }, colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.DarkGray)) {
-                        Spacer(Modifier.height(5.dp))
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                shape = RoundedCornerShape(15.dp),
+                modifier = Modifier.fillMaxSize().padding(0.dp, 80.dp)
+            ) {
+                Column(Modifier.padding(15.dp), verticalArrangement = Arrangement.SpaceBetween) {
+                    Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(applicationSetting.fileReceivePath.value, fontSize = 15.sp)
-                            Spacer(Modifier.width(10.dp))
-                            Icon(painter = painterResource("/icons/more_horiz.svg"), "", Modifier.height(15.dp))
+                            Icon(Icons.Filled.Settings, "")
+                            Spacer(Modifier.width(5.dp))
+                            Text("设置", fontWeight = FontWeight.Bold)
+                        }
+                        Spacer(Modifier.height(10.dp))
+                        Text("系统设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 5.dp))
+                        SwitchWithTag("开机启动", applicationSetting.launchWithSystem.value) {
+                            applicationSetting.launchWithSystem.value = it
+                            setAutoLaunch(it)
+                        }
+                        SwitchWithTag("启动后显示程序窗口", applicationSetting.defaultOpenWindow.value) {
+                            applicationSetting.defaultOpenWindow.value = it
+                        }
+                        Text("文件接收设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
+                        Text("文件默认保存位置")
+                        OutlinedButton(
+                            onClick = { showDirectoryPicker = true },
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.DarkGray)
+                        ) {
+                            Spacer(Modifier.height(5.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(applicationSetting.fileReceivePath.value, fontSize = 15.sp)
+                                Spacer(Modifier.width(10.dp))
+                                Icon(painter = painterResource("/icons/more_horiz.svg"), "", Modifier.height(15.dp))
+                            }
+                        }
+                        Text("音频设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
+                        Button(onClick = { openBrowser() }) {
+                            Text("下载VB-Cable音频驱动")
                         }
                     }
-                    Text("音频设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
-                    Button(onClick = { openBrowser() }) {
-                        Text("下载VB-Cable音频驱动")
-                    }
-                }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Button(onClick = onCloseRequest) {
-                        Text("关闭")
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        Button(onClick = {
+                            CoroutineScope(Dispatchers.Default).launch {
+                                exitWithAnimation(visibility) {
+                                    onCloseRequest()
+                                }
+                            }
+                        }) {
+                            Text("关闭")
+                        }
                     }
                 }
             }
@@ -81,14 +131,25 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
 }
 
 private fun setAutoLaunch(auto: Boolean) {
+    val username = System.getProperty("user.name")
+    val link = "C:\\Users\\$username\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\TyuShare.bat"
+    val userpath = System.getProperty("user.dir")
     if (auto) {
-        for (file in FileUtil.loopFiles(System.getProperty("user.dir"))) {
+        for (file in FileUtil.loopFiles(userpath)) {
             if (FileUtil.getSuffix(file).contains("exe")) {
-                Runtime.getRuntime().exec("sc create TyuShare binPath= $file start= auto")
+                val file1 = File(link)
+                if (!file1.exists()) {
+                    file1.createNewFile()
+                }
+                val fileWriter = FileWriter(file1)
+                fileWriter.write(userpath.substring(0, 2) + "\r\n")
+                fileWriter.write("cd $userpath\r\n")
+                fileWriter.write("start \"\" \"$file\"")
+                fileWriter.close()
             }
         }
     } else {
-        Runtime.getRuntime().exec("sc delete TyuShare")
+        File(link).delete()
     }
 }
 
@@ -98,4 +159,13 @@ private fun openBrowser() {
     if (dp.isSupported(Desktop.Action.BROWSE)) {
         dp.browse(uri)
     }
+}
+
+suspend fun exitWithAnimation(
+    animateTrigger: MutableState<Boolean>,
+    onDismissRequest: () -> Unit
+) {
+    animateTrigger.value = false
+    delay(ANIMATION_TIME.toLong())
+    onDismissRequest()
 }
