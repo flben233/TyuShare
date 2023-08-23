@@ -43,6 +43,7 @@ sealed class ConnectionService {
                     if (targetIp.length > 1) {
                         CommendUtil.sendCommend(HttpCommend.HEART) {
                             if (!it) {
+                                targetIp = ""
                                 currentView.value = Navigator.CONNECT_VIEW
                                 SoundStreamService.closeSocket()
                             }

@@ -1,6 +1,7 @@
 package service
 
 import androidx.compose.ui.window.Notification
+import cn.hutool.core.swing.clipboard.ClipboardListener
 import cn.hutool.core.swing.clipboard.ClipboardUtil
 import cn.hutool.http.HttpUtil
 import cn.hutool.http.server.SimpleServer
@@ -34,7 +35,12 @@ sealed class ClipboardShareService {
             }
             serverCoroutine!!.start()
             ClipboardUtil.listen({ _, contents ->
-                HttpUtil.post("http://${ConnectionService.getTargetIp()}:$clipPort/clipboard", ClipboardUtil.getStr())
+                if (ConnectionService.getTargetIp().length > 1) {
+                    HttpUtil.post(
+                        "http://${ConnectionService.getTargetIp()}:$clipPort/clipboard",
+                        ClipboardUtil.getStr()
+                    )
+                }
                 contents
             }, false)
         }

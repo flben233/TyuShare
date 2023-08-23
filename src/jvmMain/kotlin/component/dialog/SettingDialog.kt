@@ -131,8 +131,8 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
 }
 
 private fun setAutoLaunch(auto: Boolean) {
-    val username = System.getProperty("user.name")
-    val link = "C:\\Users\\$username\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\TyuShare.bat"
+    val userHome = System.getProperty("user.home")
+    val link = "$userHome\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\TyuShare.bat"
     val userpath = System.getProperty("user.dir")
     if (auto) {
         for (file in FileUtil.loopFiles(userpath)) {
