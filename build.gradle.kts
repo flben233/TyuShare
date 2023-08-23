@@ -45,7 +45,15 @@ compose.desktop {
             targetFormats(TargetFormat.Exe, TargetFormat.Msi)
             packageName = "TyuShare"
             packageVersion = "1.0.0"
+            description = "Xiao Yu Miao Xiang"
+            vendor = "ShirakawaTyu"
             includeAllModules = true
+
+            windows {
+                iconFile.set(File("D:\\IdeaProjects\\TyuShare\\favicon-128.ico"))
+                upgradeUuid = "2085302f-1da8-3661-c9a4-52588270393e"
+                shortcut = true
+            }
         }
     }
 }
