@@ -16,15 +16,16 @@ var showDialog = mutableStateOf(false)
 var totalMByte = mutableStateOf("0.00")
 var progressMByte = mutableStateOf("0.00")
 
-class FileStreamProgress: StreamProgress {
+class FileStreamProgress(private val totalSize: Long) : StreamProgress {
+
     override fun start() {
         showDialog.value = true
     }
 
     override fun progress(total: Long, progressSize: Long) {
-        totalMByte.value = String.format("%.2f MB", total / (1024 * 1024.0))
+        totalMByte.value = String.format("%.2f MB", totalSize / (1024 * 1024.0))
         progressMByte.value = String.format("%.2f MB", progressSize / (1024 * 1024.0))
-        progress.value = progressSize / total.toFloat()
+        progress.value = progressSize / totalSize.toFloat()
     }
 
     override fun finish() {
@@ -47,18 +48,16 @@ fun FileTransfer(modifier: Modifier = Modifier) {
             onDismissRequest = {},
             title = { Text(text = "正在传输文件") },
             text = {
-                LinearProgressIndicator(progress = progress.value, Modifier.fillMaxWidth())
-                Spacer(Modifier.height(5.dp))
-                Text("Tips: 接收到的文件放在${applicationSetting.fileReceivePath.value}")
-                   },
-            confirmButton = {
-                Button(
-                    onClick = { showDialog.value = false },
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text("完成")
+                Column {
+                    LinearProgressIndicator(progress = progress.value, Modifier.fillMaxWidth())
+                    Text("${progressMByte.value} / ${totalMByte.value}", Modifier.padding(0.dp, 10.dp))
+                    Text(
+                        "Tips: 接收到的文件放在${applicationSetting.fileReceivePath.value}",
+                        Modifier.padding(0.dp, 10.dp)
+                    )
                 }
             },
+            confirmButton = {},
         )
     }
     MaterialCard(title = "文件传输", description = "可以让你从这台电脑传文件到另一台电脑", modifier = modifier) {
