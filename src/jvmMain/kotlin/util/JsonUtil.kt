@@ -29,6 +29,10 @@ sealed class JsonUtil {
 
     inline fun <reified T> toJsonFile(filePath: String, obj: T) {
         val json = File(filePath)
+        val path = File(filePath.substring(0, filePath.lastIndexOf("\\")))
+        if (!path.exists()) {
+            path.mkdirs()
+        }
         if (!json.exists()) {
             json.createNewFile()
         }

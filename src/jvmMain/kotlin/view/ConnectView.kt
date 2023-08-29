@@ -31,7 +31,8 @@ fun ConnectView() {
     var connectBtnText by remember { mutableStateOf("连接") }
     var enable by remember { mutableStateOf(true) }
     var ipAddress by remember { mutableStateOf("") }
-    val lastConnections = JsonUtil.parseJsonFile("./history.json", mutableListOf<ConnectionItem>())
+    val historyPath = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\history.json"
+    val lastConnections = JsonUtil.parseJsonFile(historyPath, mutableListOf<ConnectionItem>())
     var localIp by remember { mutableStateOf(ArrayList<String>()) }
 
     fun onConnectBtn(ip: String, then: (Boolean) -> Unit = {}) {
@@ -45,7 +46,7 @@ fun ConnectView() {
                 connectBtnText = "连接"
             }
             then(it)
-            JsonUtil.toJsonFile("./history.json", lastConnections)
+            JsonUtil.toJsonFile(historyPath, lastConnections)
         }
     }
 
