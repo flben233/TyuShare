@@ -44,7 +44,7 @@ fun App(modifier: Modifier = Modifier) {
 }
 
 
-// TODO: 音频输出自动切换，设置里放上项目链接
+// TODO: 音频输出自动切换
 // TODO: 窗口阴影还要调一调
 fun main() = application {
     FlatLightLaf.setup()

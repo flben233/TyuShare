@@ -27,8 +27,8 @@ sealed class ConnectionService {
                             currentView.value = Navigator.MAIN_VIEW
                         }
 
-                        HttpCommend.START_SOUND -> SoundStreamService.startSoundServer()
-                        HttpCommend.CLOSE_SOUND -> SoundStreamService.closeSocket()
+                        HttpCommend.START_SOUND -> SoundStreamService.start()
+                        HttpCommend.CLOSE_SOUND -> SoundStreamService.stop()
                         HttpCommend.START_CLIPBOARD -> ClipboardShareService.startShare()
                         HttpCommend.STOP_CLIPBOARD -> ClipboardShareService.stopShareServer()
                         HttpCommend.SEND_FILE -> FileTransferService.receiveFile(
@@ -48,7 +48,7 @@ sealed class ConnectionService {
                             if (!it) {
                                 targetIp = ""
                                 currentView.value = Navigator.CONNECT_VIEW
-                                SoundStreamService.closeSocket()
+                                SoundStreamService.stop()
                             }
                         }
                     }

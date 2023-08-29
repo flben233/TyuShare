@@ -7,9 +7,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,21 +25,14 @@ import applicationSetting
 import cn.hutool.core.io.FileUtil
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import component.material.SwitchWithTag
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material3.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.awt.Desktop
-import java.io.BufferedReader
 import java.io.File
 import java.io.FileWriter
-import java.io.InputStreamReader
 import java.net.URI
-import java.nio.file.Files
-import javax.swing.JOptionPane
-import kotlin.io.path.Path
 
 private const val ANIMATION_TIME = 180
 
@@ -77,7 +72,7 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
             Surface(
                 color = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(15.dp),
-                modifier = Modifier.fillMaxSize().padding(0.dp, 80.dp)
+                modifier = Modifier.fillMaxSize().padding(0.dp, 40.dp)
             ) {
                 Column(Modifier.padding(15.dp), verticalArrangement = Arrangement.SpaceBetween) {
                     Column {
@@ -109,8 +104,16 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
                             }
                         }
                         Text("音频设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
-                        Button(onClick = { openBrowser() }) {
+                        Button(onClick = { openBrowser("https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip") }) {
                             Text("下载VB-Cable音频驱动")
+                        }
+                        Text("项目地址", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
+                        OutlinedButton(
+                            onClick = { openBrowser("https://github.com/flben233/TyuShare") },
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.DarkGray)
+                        ) {
+                            Spacer(Modifier.height(5.dp))
+                            Text("https://github.com/flben233/TyuShare", fontSize = 15.sp)
                         }
                     }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -153,8 +156,8 @@ private fun setAutoLaunch(auto: Boolean) {
     }
 }
 
-private fun openBrowser() {
-    val uri = URI.create("https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip")
+private fun openBrowser(url: String) {
+    val uri = URI.create(url)
     val dp = Desktop.getDesktop()
     if (dp.isSupported(Desktop.Action.BROWSE)) {
         dp.browse(uri)
