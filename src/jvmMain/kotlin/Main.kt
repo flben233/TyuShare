@@ -23,8 +23,9 @@ import service.ConnectionService
 import util.JsonUtil
 
 
+val SETTING_PATH = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\settings.json"
 val currentView = mutableStateOf(Navigator.CONNECT_VIEW)
-var applicationSetting = JsonUtil.parseJsonFile("./settings.json", ApplicationSetting())
+var applicationSetting = JsonUtil.parseJsonFile(SETTING_PATH, ApplicationSetting())
 val tray = TrayState()
 
 @Composable
@@ -52,11 +53,10 @@ fun main() = application {
     val state = rememberWindowState(placement = WindowPlacement.Floating)
     val showMenu = remember { mutableStateOf(false) }
 
-
     Window(
         undecorated = true,
         onCloseRequest = {
-            JsonUtil.toJsonFile("./settings.json", applicationSetting)
+            JsonUtil.toJsonFile(SETTING_PATH, applicationSetting)
             isOpen.value = false
         },
         title = "小雨妙享",
@@ -75,7 +75,7 @@ fun main() = application {
                 TitleBar(
                     modifier = Modifier.weight(1f),
                     onCloseRequest = {
-                        JsonUtil.toJsonFile("./settings.json", applicationSetting)
+                        JsonUtil.toJsonFile(SETTING_PATH, applicationSetting)
                         isOpen.value = false
                     },
                     onMenuRequest = { showMenu.value = true },
@@ -84,7 +84,7 @@ fun main() = application {
                 App(Modifier.weight(16f))
                 if (showMenu.value) {
                     SettingDialog {
-                        JsonUtil.toJsonFile("./settings.json", applicationSetting)
+                        JsonUtil.toJsonFile(SETTING_PATH, applicationSetting)
                         showMenu.value = false
                     }
                 }
@@ -96,7 +96,7 @@ fun main() = application {
     Tray(icon = painterResource("favicon-64.png"), state = trayState, onAction = { isOpen.value = true }, menu = {
         Item("显示主界面", onClick = { isOpen.value = true })
         Item("退出", onClick = {
-            JsonUtil.toJsonFile("./settings.json", applicationSetting)
+            JsonUtil.toJsonFile(SETTING_PATH, applicationSetting)
             exitApplication()
         })
     })
