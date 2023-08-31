@@ -36,10 +36,13 @@ sealed class ClipboardShareService {
             serverCoroutine!!.start()
             ClipboardUtil.listen({ _, contents ->
                 if (ConnectionService.getTargetIp().length > 1) {
-                    HttpUtil.post(
-                        "http://${ConnectionService.getTargetIp()}:$clipPort/clipboard",
-                        ClipboardUtil.getStr()
-                    )
+                    try {
+                        val contentStr = ClipboardUtil.getStr()
+                        HttpUtil.post(
+                            "http://${ConnectionService.getTargetIp()}:$clipPort/clipboard",
+                            contentStr
+                        )
+                    } catch (_: Exception){}
                 }
                 contents
             }, false)
