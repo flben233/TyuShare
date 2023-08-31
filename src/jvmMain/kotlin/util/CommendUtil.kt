@@ -16,10 +16,10 @@ sealed class CommendUtil {
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 HttpUtil.post("http://$ipAddress:$SERVICE_PORT", commend)
+                callback(true)
             } catch (e: Exception) {
                 callback(false)
             }
-            callback(true)
         }
     }
 
