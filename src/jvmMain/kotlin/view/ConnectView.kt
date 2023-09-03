@@ -44,6 +44,7 @@ fun ConnectView() {
                 currentView.value = Navigator.MAIN_VIEW
             } else {
                 connectBtnText = "连接"
+                enable = true
             }
             then(it)
             JsonUtil.toJsonFile(historyPath, lastConnections)

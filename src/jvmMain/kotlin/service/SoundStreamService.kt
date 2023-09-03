@@ -5,6 +5,7 @@ import common.HttpCommend
 import component.tool.SoundStreamMode
 import config.SERVICE_PORT
 import util.CommendUtil
+import util.LoggerUtil
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
@@ -86,7 +87,8 @@ sealed class SoundStreamService {
                     sourceDataLine!!.write(buffer, 0, packet.length)
                     udpSocket.receive(packet)
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                LoggerUtil.logStackTrace(e.stackTrace)
             }
         }
         soundThread!!.start()
@@ -106,7 +108,8 @@ sealed class SoundStreamService {
                         )
                     )
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                LoggerUtil.logStackTrace(e.stackTrace)
             }
         }
         soundThread!!.start()
@@ -119,7 +122,8 @@ sealed class SoundStreamService {
                 if (info1.name.contains("CABLE Output (VB-Audio")) {
                     return AudioSystem.getMixer(info1).getLine(info) as TargetDataLine
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                LoggerUtil.logStackTrace(e.stackTrace)
             }
         }
         throw RuntimeException("Cannot find virtual audio device.")
