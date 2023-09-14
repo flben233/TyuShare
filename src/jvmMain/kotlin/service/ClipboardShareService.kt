@@ -9,18 +9,30 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import service.interfaces.BidirectionalService
 import tray
 import util.ClipboardUtil
 import util.CommendUtil
 import util.LoggerUtil
 
-sealed class ClipboardShareService {
+sealed class ClipboardShareService: BidirectionalService {
     companion object Default : ClipboardShareService()
 
     private var server: SimpleServer? = null
     private val clipPort = SERVICE_PORT + 2
     private var serverCoroutine: Job? = null
-    fun startShare() {
+
+    init {
+        ClipboardUtil.setStr("")
+    }
+
+    override fun sendCommendAndStart() {
+        CommendUtil.sendCommend(HttpCommend.START_CLIPBOARD) {
+            start()
+        }
+    }
+
+    override fun start() {
         if (serverCoroutine == null) {
             server = HttpUtil.createServer(clipPort)
             serverCoroutine = CoroutineScope(Dispatchers.Default).launch {
@@ -52,14 +64,14 @@ sealed class ClipboardShareService {
         }
     }
 
-    fun stopShareServer() {
+    override fun stop() {
         server?.rawServer?.stop(1)
         serverCoroutine = null
     }
 
-    fun stopShare() {
+    override fun sendCommendAndStop() {
         CommendUtil.sendCommend(HttpCommend.STOP_CLIPBOARD) {
-            stopShareServer()
+            stop()
         }
     }
 

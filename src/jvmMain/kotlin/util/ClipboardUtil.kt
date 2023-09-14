@@ -2,7 +2,6 @@ package util
 
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
-import java.awt.datatransfer.FlavorEvent
 import java.awt.datatransfer.FlavorListener
 import java.awt.datatransfer.StringSelection
 
@@ -11,33 +10,30 @@ sealed class ClipboardUtil {
     companion object Default : ClipboardUtil()
 
     private val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+    private var clipboardListener: FlavorListener? = null
+    private var clipboardHandler: () -> Unit = {}
 
     fun listen(listener: () -> Unit) {
-        clipboard.addFlavorListener(ClipboardListener(listener))
+        clipboardListener = FlavorListener { listener() }
+        clipboardHandler = listener
+        clipboard.addFlavorListener(clipboardListener)
     }
 
     fun getStr(): String? {
-        val str: String?
+        var str: String? = null
         try {
-            clipboard.getContents(null)
-            str = clipboard.getData(DataFlavor.stringFlavor) as String
+            str = Toolkit.getDefaultToolkit().systemClipboard.getData(DataFlavor.stringFlavor) as String
         } catch (e: Exception) {
             LoggerUtil.logStackTrace(e.stackTrace)
-            return null
+        }
+        if (str != null) {
+            setStr(str)
         }
         return str
     }
 
     fun setStr(str: String) {
-        clipboard.setContents(StringSelection(str), null)
-    }
-
-    class ClipboardListener(val listener: () -> Unit): FlavorListener {
-        private val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-        override fun flavorsChanged(e: FlavorEvent?) {
-            listener()
-            clipboard.removeFlavorListener(this)
-            clipboard.addFlavorListener(this)
-        }
+        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(str), null)
     }
 }
+

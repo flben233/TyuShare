@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import component.info.StatusPanel
 import component.tool.ClipboardShare
 import component.tool.FileTransfer
+import component.tool.KeyboardShare
 import component.tool.SoundStream
 
 
@@ -23,8 +24,12 @@ fun MainView() {
         Spacer(Modifier.width(15.dp))
         Column (Modifier.fillMaxHeight().weight(1f)) {
             SoundStream(modifier = Modifier.weight(1f))
-            ClipboardShare(modifier = Modifier.weight(1f))
-            FileTransfer(modifier = Modifier.weight(1f))
+            KeyboardShare(modifier = Modifier.weight(1f))
+            Row (modifier = Modifier.weight(1f)) {
+                ClipboardShare(Modifier.weight(1f))
+                Spacer(Modifier.width(15.dp))
+                FileTransfer(Modifier.weight(1f))
+            }
         }
     }
 }

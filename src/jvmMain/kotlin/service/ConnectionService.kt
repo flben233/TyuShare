@@ -29,8 +29,8 @@ sealed class ConnectionService {
 
                         HttpCommend.START_SOUND -> SoundStreamService.start()
                         HttpCommend.CLOSE_SOUND -> SoundStreamService.stop()
-                        HttpCommend.START_CLIPBOARD -> ClipboardShareService.startShare()
-                        HttpCommend.STOP_CLIPBOARD -> ClipboardShareService.stopShareServer()
+                        HttpCommend.START_CLIPBOARD -> ClipboardShareService.start()
+                        HttpCommend.STOP_CLIPBOARD -> ClipboardShareService.stop()
                         HttpCommend.SEND_FILE -> FileTransferService.receiveFile(
                             request.getHeader("File-Name"),
                             request.getHeader("File-Size").toLong()

@@ -26,6 +26,7 @@ import util.JsonUtil
 val SETTING_PATH = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\settings.json"
 val currentView = mutableStateOf(Navigator.CONNECT_VIEW)
 var applicationSetting = JsonUtil.parseJsonFile(SETTING_PATH, ApplicationSetting())
+val isOpen = mutableStateOf(applicationSetting.defaultOpenWindow.value)
 val tray = TrayState()
 
 @Composable
@@ -44,12 +45,11 @@ fun App(modifier: Modifier = Modifier) {
     }
 }
 
-
 // TODO: 音频输出自动切换
 // TODO: 窗口阴影还要调一调
 fun main() = application {
     FlatLightLaf.setup()
-    val isOpen = remember { mutableStateOf(applicationSetting.defaultOpenWindow.value) }
+
     val state = rememberWindowState(placement = WindowPlacement.Floating)
     val showMenu = remember { mutableStateOf(false) }
 

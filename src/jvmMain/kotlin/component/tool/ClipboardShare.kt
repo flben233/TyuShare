@@ -13,8 +13,8 @@ import service.ClipboardShareService
 
 @Composable
 fun ClipboardShare(modifier: Modifier = Modifier) {
-    ClipboardShareService.startShare()
-    MaterialCard("剪贴板共享", "两台电脑共享剪贴板，十分令人快乐的功能", modifier = modifier) {
+    ClipboardShareService.start()
+    MaterialCard("剪贴板共享", "传文本", modifier = modifier) {
         Row (modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -22,9 +22,9 @@ fun ClipboardShare(modifier: Modifier = Modifier) {
                 Switch(applicationSetting.clipboardStatus.value, {
                     applicationSetting.clipboardStatus.value = it
                     if (it) {
-                        ClipboardShareService.startShare()
+                        ClipboardShareService.sendCommendAndStart()
                     } else {
-                        ClipboardShareService.stopShare()
+                        ClipboardShareService.sendCommendAndStop()
                     }
                 })
             }

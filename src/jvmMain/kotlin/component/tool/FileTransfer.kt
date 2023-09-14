@@ -60,7 +60,7 @@ fun FileTransfer(modifier: Modifier = Modifier) {
             confirmButton = {},
         )
     }
-    MaterialCard(title = "文件传输", description = "可以让你从这台电脑传文件到另一台电脑", modifier = modifier) {
+    MaterialCard(title = "文件传输", description = "传文件", modifier = modifier) {
         Column(Modifier.fillMaxWidth()) {
             Spacer(Modifier.height(5.dp))
             Button(onClick = { showFilePicker = true }) {
