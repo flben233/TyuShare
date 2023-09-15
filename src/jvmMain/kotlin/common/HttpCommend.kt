@@ -9,5 +9,7 @@ class HttpCommend {
         const val START_CLIPBOARD = "<START_CLIPBOARD>"
         const val STOP_CLIPBOARD = "<STOP_CLIPBOARD>"
         const val SEND_FILE = "<SEND_FILE>"
+        const val START_KEY_SHARE = "<START_KEY_SHARE>"
+        const val STOP_KEY_SHARE = "<STOP_KEY_SHARE>"
     }
 }

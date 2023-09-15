@@ -35,6 +35,8 @@ sealed class ConnectionService {
                             request.getHeader("File-Name"),
                             request.getHeader("File-Size").toLong()
                         )
+                        HttpCommend.START_KEY_SHARE -> KeyboardShareService.start()
+                        HttpCommend.STOP_KEY_SHARE -> KeyboardShareService.stop()
                     }
                     response.sendOk()
                 }

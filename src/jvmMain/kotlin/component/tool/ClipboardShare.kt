@@ -13,7 +13,10 @@ import service.ClipboardShareService
 
 @Composable
 fun ClipboardShare(modifier: Modifier = Modifier) {
-    ClipboardShareService.start()
+    if (applicationSetting.clipboardStatus.value) {
+        ClipboardShareService.sendCommendAndStart()
+    }
+
     MaterialCard("剪贴板共享", "传文本", modifier = modifier) {
         Row (modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically

@@ -27,13 +27,13 @@ sealed class ClipboardUtil {
             LoggerUtil.logStackTrace(e.stackTrace)
         }
         if (str != null) {
-            setStr(str)
+            setStr(str.trim())
         }
         return str
     }
 
     fun setStr(str: String) {
-        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(str), null)
+        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(str.trim()), null)
     }
 }
 
