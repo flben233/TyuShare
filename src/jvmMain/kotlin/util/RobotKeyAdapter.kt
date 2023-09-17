@@ -122,7 +122,6 @@ sealed class RobotKeyAdapter {
             VC_SHIFT -> KeyEvent.VK_SHIFT
             VC_CONTROL -> KeyEvent.VK_CONTROL
             VC_ALT -> KeyEvent.VK_ALT
-
             VC_CONTEXT_MENU -> KeyEvent.VK_CONTEXT_MENU
             // End Modifier and Control Keys
 

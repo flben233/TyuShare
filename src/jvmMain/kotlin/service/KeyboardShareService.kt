@@ -146,8 +146,8 @@ sealed class KeyboardShareService : BidirectionalService {
     private fun btnIndexToMask(pointerButton: PointerButton?): Int? {
         return when (pointerButton?.index) {
             PointerButton.Primary.index -> InputEvent.BUTTON1_DOWN_MASK
-            PointerButton.Secondary.index -> InputEvent.BUTTON2_DOWN_MASK
-            PointerButton.Tertiary.index -> InputEvent.BUTTON3_DOWN_MASK
+            PointerButton.Secondary.index -> InputEvent.BUTTON3_DOWN_MASK
+            PointerButton.Tertiary.index -> InputEvent.BUTTON2_DOWN_MASK
             else -> null
         }
     }

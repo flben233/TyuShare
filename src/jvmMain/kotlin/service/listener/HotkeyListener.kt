@@ -2,8 +2,10 @@ package service.listener
 
 import applicationSetting
 import cn.hutool.core.collection.ConcurrentHashSet
+import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
+import kotlinx.coroutines.GlobalScope
 import service.KeyboardShareService
 
 
