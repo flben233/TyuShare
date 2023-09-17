@@ -117,7 +117,6 @@ sealed class KeyboardShareService : BidirectionalService {
                 null,
                 false
             )
-            println(action)
             sendKey(action)
         }
     }
@@ -169,7 +168,7 @@ sealed class KeyboardShareService : BidirectionalService {
     }
 
     private fun handleKey(action: KeyAction) {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             if (action.key != null && action.key != 0) {
                 try {
                     if (action.keyPressed) {
