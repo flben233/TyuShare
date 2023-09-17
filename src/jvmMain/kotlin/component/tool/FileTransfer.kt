@@ -31,9 +31,15 @@ class FileStreamProgress(private val totalSize: Long) : StreamProgress {
     override fun finish() {
         showDialog.value = false
     }
-
 }
 
+
+/**
+ * 文件传输工具卡片
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:01 PM
+ * @version 1.0
+ */
 @Composable
 fun FileTransfer(modifier: Modifier = Modifier) {
     var showFilePicker by remember { mutableStateOf(false) }

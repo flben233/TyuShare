@@ -16,10 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.formdev.flatlaf.FlatLightLaf
+import com.github.kwhat.jnativehook.GlobalScreen
+import com.github.kwhat.jnativehook.dispatcher.VoidDispatchService
 import component.dialog.SettingDialog
 import component.material.TitleBar
 import model.ApplicationSetting
 import service.ConnectionService
+import service.listener.HotkeyListener
 import util.JsonUtil
 
 
@@ -28,6 +31,8 @@ val currentView = mutableStateOf(Navigator.CONNECT_VIEW)
 var applicationSetting = JsonUtil.parseJsonFile(SETTING_PATH, ApplicationSetting())
 val isOpen = mutableStateOf(applicationSetting.defaultOpenWindow.value)
 val tray = TrayState()
+val hotkeyListener = HotkeyListener()
+var added = false
 
 @Composable
 @Preview
@@ -49,7 +54,12 @@ fun App(modifier: Modifier = Modifier) {
 // TODO: 窗口阴影还要调一调
 fun main() = application {
     FlatLightLaf.setup()
-
+    GlobalScreen.setEventDispatcher(VoidDispatchService())
+    GlobalScreen.registerNativeHook()
+    if (!added) {
+        GlobalScreen.addNativeKeyListener(hotkeyListener)
+        added = true
+    }
     val state = rememberWindowState(placement = WindowPlacement.Floating)
     val showMenu = remember { mutableStateOf(false) }
 

@@ -11,6 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 
+/**
+ * 带标签的Switch组件
+ * @author ShirakawaTyu
+ * @since 9/17/2023 4:59 PM
+ * @version 1.0
+ */
 @Composable
 fun SwitchWithTag(tag: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {

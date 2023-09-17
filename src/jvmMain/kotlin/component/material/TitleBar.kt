@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowScope
 
+
 @Composable
 fun BarButton(onClick: () -> Unit, content: @Composable () -> Unit) {
     Button(
@@ -28,6 +29,13 @@ fun BarButton(onClick: () -> Unit, content: @Composable () -> Unit) {
     }
 }
 
+
+/**
+ * 用于取代原生Windows的MD风格窗口标题栏
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:01 PM
+ * @version 1.0
+ */
 @Composable
 fun WindowScope.TitleBar(modifier: Modifier,
                          onCloseRequest: () -> Unit,

@@ -12,6 +12,12 @@ import component.tool.KeyboardShare
 import component.tool.SoundStream
 
 
+/**
+ * 主界面
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:27 PM
+ * @version 1.0
+ */
 @Preview
 @Composable
 fun MainView() {

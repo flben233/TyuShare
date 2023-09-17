@@ -10,7 +10,12 @@ import applicationSetting
 import component.material.MaterialCard
 import service.ClipboardShareService
 
-
+/**
+ * 剪贴板共享工具卡片
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:01 PM
+ * @version 1.0
+ */
 @Composable
 fun ClipboardShare(modifier: Modifier = Modifier) {
     if (applicationSetting.clipboardStatus.value) {

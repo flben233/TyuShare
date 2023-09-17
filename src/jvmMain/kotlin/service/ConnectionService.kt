@@ -9,6 +9,12 @@ import util.CommendUtil
 import java.util.*
 
 
+/**
+ * 连接及指令服务实现
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:14 PM
+ * @version 1.0
+ */
 sealed class ConnectionService {
 
     companion object Default : ConnectionService()
@@ -16,6 +22,10 @@ sealed class ConnectionService {
     private var targetIp = ""
     private var serverThread: Thread? = null
 
+    /**
+     * 启动指令服务器
+     * @author ShirakawaTyu
+     */
     fun startCommendServer() {
         if (serverThread == null) {
             val server = HttpUtil.createServer(SERVICE_PORT)
@@ -59,6 +69,10 @@ sealed class ConnectionService {
         }
     }
 
+    /**
+     * 连接一个客户端
+     * @author ShirakawaTyu
+     */
     fun connect(ipAddress: String, callback: (Boolean) -> Unit) {
         CommendUtil.sendCommend(HttpCommend.CONNECT, ipAddress) {
             targetIp = ipAddress
@@ -66,15 +80,20 @@ sealed class ConnectionService {
         }
     }
 
+    /**
+     * 断开连接客户端
+     * @author ShirakawaTyu
+     */
     fun disconnect() {
         targetIp = ""
         currentView.value = Navigator.CONNECT_VIEW
     }
 
+    /**
+     * 取得对方IP
+     * @author ShirakawaTyu
+     */
     fun getTargetIp(): String {
         return targetIp
     }
 }
-
-
-

@@ -16,6 +16,13 @@ import service.ConnectionService
 import util.HardwareUtil
 import java.util.*
 
+
+/**
+ * 系统状态显示卡片
+ * @author ShirakawaTyu
+ * @since 9/17/2023 4:52 PM
+ * @version 1.0
+ */
 @Composable
 fun StatusPanel() {
     var cpuLoad by remember { mutableStateOf("0%") }

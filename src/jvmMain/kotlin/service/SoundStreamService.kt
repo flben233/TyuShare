@@ -17,9 +17,17 @@ import java.util.concurrent.Executors
 import javax.sound.sampled.*
 
 
+/**
+ * 音频串流服务实现
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:20 PM
+ * @version 1.0
+ */
 sealed class SoundStreamService : BidirectionalService {
 
+    // 音频串流UDP端口
     private val soundPort = SERVICE_PORT + 1
+
     private var udpSocket: DatagramSocket = DatagramSocket(soundPort)
     private var soundThread: Thread? = null
     private val audioFormat = AudioFormat(48000.0f, 16, 2, true, false)
@@ -34,6 +42,11 @@ sealed class SoundStreamService : BidirectionalService {
         udpSocket.soTimeout = 1000
     }
 
+    /**
+     * 启动音频串流服务，这里会根据当前的设定决定发送数据还是播放音频
+     * 一般在接收到请求后调用
+     * @author ShirakawaTyu
+     */
     override fun start() {
         applicationSetting.soundStreamStatus.value = true
         if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER) {
@@ -43,6 +56,10 @@ sealed class SoundStreamService : BidirectionalService {
         }
     }
 
+    /**
+     * 发送启动音频串流服务请求并打开自身服务
+     * @author ShirakawaTyu
+     */
     override fun sendCommendAndStart() {
         CommendUtil.sendCommend(HttpCommend.START_SOUND, callback = {
             if (it) {
@@ -51,12 +68,20 @@ sealed class SoundStreamService : BidirectionalService {
         })
     }
 
+    /**
+     * 停止音频串流服务，一般在接收到请求后调用
+     * @author ShirakawaTyu
+     */
     override fun stop() {
         applicationSetting.soundStreamStatus.value = false
         soundThread?.interrupt()
         soundThread = null
     }
 
+    /**
+     * 发送停止音频串流服务请求并停止自身服务
+     * @author ShirakawaTyu
+     */
     override fun sendCommendAndStop() {
         CommendUtil.sendCommend(HttpCommend.CLOSE_SOUND, callback = {
             if (it) {
@@ -65,6 +90,10 @@ sealed class SoundStreamService : BidirectionalService {
         })
     }
 
+    /**
+     * 重启服务
+     * @author ShirakawaTyu
+     */
     fun restart() {
         CommendUtil.sendCommend(HttpCommend.CLOSE_SOUND, callback = {
             if (it) {
@@ -74,6 +103,10 @@ sealed class SoundStreamService : BidirectionalService {
         })
     }
 
+    /**
+     * 播放对方传入的音频数据
+     * @author ShirakawaTyu
+     */
     private fun playSound() {
         val sourceInfo = DataLine.Info(SourceDataLine::class.java, audioFormat, AudioSystem.NOT_SPECIFIED)
         val sourceDataLine = AudioSystem.getLine(sourceInfo) as SourceDataLine
@@ -97,12 +130,16 @@ sealed class SoundStreamService : BidirectionalService {
                 sourceDataLine.stop()
                 sourceDataLine.close()
             } catch (e: Exception) {
-                LoggerUtil.logStackTrace(e.stackTrace)
+                LoggerUtil.logStackTrace(e)
             }
         }
         soundThread!!.start()
     }
 
+    /**
+     * 发送音频数据
+     * @author ShirakawaTyu
+     */
     private fun sendSound() {
         val targetInfo = DataLine.Info(TargetDataLine::class.java, audioFormat)
         val targetDataLine = getLine(targetInfo)
@@ -126,12 +163,16 @@ sealed class SoundStreamService : BidirectionalService {
                 targetDataLine.stop()
                 targetDataLine.close()
             } catch (e: Exception) {
-                LoggerUtil.logStackTrace(e.stackTrace)
+                LoggerUtil.logStackTrace(e)
             }
         }
         soundThread!!.start()
     }
 
+    /**
+     * 取得音频输入设备
+     * @author ShirakawaTyu
+     */
     private fun getLine(info: Line.Info): TargetDataLine {
         val mixerInfo = AudioSystem.getMixerInfo()
         for (info1 in mixerInfo) {
@@ -140,7 +181,7 @@ sealed class SoundStreamService : BidirectionalService {
                     return AudioSystem.getMixer(info1).getLine(info) as TargetDataLine
                 }
             } catch (e: Exception) {
-                LoggerUtil.logStackTrace(e.stackTrace)
+                LoggerUtil.logStackTrace(e)
             }
         }
         throw RuntimeException("Cannot find virtual audio device.")

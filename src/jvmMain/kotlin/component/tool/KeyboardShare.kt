@@ -1,28 +1,25 @@
 package component.tool
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.type
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.rememberWindowState
 import applicationSetting
 import component.material.MaterialCard
-import kotlinx.coroutines.delay
 import service.KeyboardShareService
-import java.awt.MouseInfo
-import java.awt.Robot
+import java.awt.Toolkit
 
 class KeyboardMode {
     companion object {
@@ -30,13 +27,21 @@ class KeyboardMode {
         var BE_CONTROLLER = "被控端"
     }
 }
+val showMask = mutableStateOf(false)
 
-@OptIn(ExperimentalComposeUiApi::class)
+
+/**
+ * 键鼠共享工具卡片
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:02 PM
+ * @version 1.0
+ */
 @Composable
 fun KeyboardShare(modifier: Modifier) {
     var expended by remember { mutableStateOf(false) }
 
     fun onClickItem(mode: String) {
+        expended = false
         applicationSetting.keyboardMode.value = mode
         KeyboardShareService.restart()
     }
@@ -50,27 +55,14 @@ fun KeyboardShare(modifier: Modifier) {
                 ) {
                     KeyboardShareService.sendMouse(event)
                 }
-                val first = event.changes.first()
-                println(first.position)
-                println(first.previousPosition)
-                println(first.pressed)
-                println(event.button)
-                println(first.scrollDelta)
             }
         }
     }
 
-    // TODO: 开启后显示一个大窗口防止鼠标跑出操作区域同时实现鼠标左右键
-    // TODO: 阻止键盘操作
-
     MaterialCard(
         "键鼠共享",
-        "鼠标和键盘的操作将从控制端发送至被控端，如要关闭请在被控端操作或使用Alt+Tab",
-        modifier = modifier.pointerInput(Unit, onMouseEvent)
-            .onKeyEvent {
-                KeyboardShareService.sendKeyboard(it)
-                true
-            }
+        "操作将从控制端发送至被控端，使用F11+F12可快速切换状态",
+        modifier = modifier
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -96,5 +88,31 @@ fun KeyboardShare(modifier: Modifier) {
                 }
             }
         }
+    }
+
+    // 当处于控制端时的屏幕遮罩
+    val maskState = rememberWindowState(placement = WindowPlacement.Floating)
+    Window(
+        undecorated = true,
+        onCloseRequest = { showMask.value = false },
+        transparent = true,
+        visible = showMask.value,
+        state = maskState,
+    ) {
+        val dpi = Toolkit.getDefaultToolkit().screenResolution
+        val screenSize = Toolkit.getDefaultToolkit().screenSize
+        val dpiUnit = 160f
+        val windowsDpi = 96f
+        val pixelRatio = dpi / windowsDpi
+        val perDpPixel = dpi / dpiUnit
+        maskState.size = DpSize(
+            width = (screenSize.width * pixelRatio / perDpPixel).dp,
+            height = (screenSize.height * pixelRatio / perDpPixel).dp
+        )
+        maskState.position = WindowPosition(0.dp, 0.dp)
+        Surface(
+            modifier = Modifier.pointerInput(Unit, onMouseEvent).alpha(0.2f).fillMaxSize(),
+            color = Color.Black
+        ) {}
     }
 }

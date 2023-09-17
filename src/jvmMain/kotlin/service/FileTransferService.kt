@@ -19,14 +19,26 @@ import java.net.ServerSocket
 import java.net.Socket
 import java.nio.charset.StandardCharsets
 
+
+/**
+ * 文件传输服务实现
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:16 PM
+ * @version 1.0
+ */
 sealed class FileTransferService {
     companion object Default : FileTransferService()
 
     private val filePort = SERVICE_PORT + 3
 
+    /**
+     * 发送一个文件
+     * @param filePath 文件路径，比如"/var/caddy.conf"
+     * @author ShirakawaTyu
+     */
     fun sendFile(filePath: String) {
         val file = File(filePath)
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val server = ServerSocket(filePort)
             val client = server.accept()
             val outputStream = client.getOutputStream()
@@ -42,9 +54,15 @@ sealed class FileTransferService {
         CommendUtil.sendCommend(HttpCommend.SEND_FILE, ConnectionService.getTargetIp(), headers) {}
     }
 
+    /**
+     * 接收文件，保存到设置好的路径下
+     * @param fileName 保存到的文件名
+     * @param fileSize 文件大小
+     * @author ShirakawaTyu
+     */
     fun receiveFile(fileName: String, fileSize: Long) {
         val client = Socket(ConnectionService.getTargetIp(), filePort)
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val path = File(applicationSetting.fileReceivePath.value)
             if (!path.exists()) {
                 path.mkdirs()

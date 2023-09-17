@@ -15,7 +15,9 @@ sealed class LoggerUtil {
         }
     }
 
-    fun logStackTrace(stackTrace: Array<StackTraceElement>) {
+    fun logStackTrace(e: Exception) {
+        e.printStackTrace()
+        val stackTrace: Array<StackTraceElement> = e.stackTrace
         val writer = BufferedWriter(FileWriter(logFile, true))
         for (traceElement in stackTrace) {
             writer.append("${DateUtil.getDateString()}:  at $traceElement \n")

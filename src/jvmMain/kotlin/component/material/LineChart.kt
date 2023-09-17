@@ -15,13 +15,27 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 
-
+/**
+ * 坐标轴数据对象
+ * @author ShirakawaTyu
+ * @since 9/17/2023 4:55 PM
+ * @version 1.0
+ */
 data class Axis(
+    // 存放数据的列表
     val data: List<Float>,
+    // 数据颜色
     val color: Color,
+    // 数据名字
     val name: String
 )
 
+/**
+ * 可以同时显示两个数据的折线图组件，最大数据长度为100
+ * @author ShirakawaTyu
+ * @since 9/17/2023 4:53 PM
+ * @version 1.0
+ */
 @Composable
 fun DoubleLineChart(
     primaryAxis: Axis,
@@ -81,6 +95,12 @@ fun DoubleLineChart(
     }
 }
 
+/**
+ * 图表标签
+ * @author ShirakawaTyu
+ * @since 9/17/2023 4:54 PM
+ * @version 1.0
+ */
 @Composable
 fun ChartTag(color: Color, name: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {

@@ -8,7 +8,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import util.MutableStateSerializer
 
-
+/**
+ * 全局设置状态
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:04 PM
+ * @version 1.0
+ */
 @Serializable
 data class ApplicationSetting(
     @Serializable(with = MutableStateSerializer::class)

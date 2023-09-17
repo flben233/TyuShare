@@ -32,6 +32,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.0-RC")
                 implementation("com.github.oshi:oshi-core:6.4.4")
                 implementation("com.darkrockstudios:mpfilepicker:2.0.2")
+                implementation("com.github.kwhat:jnativehook:2.2.2")
             }
         }
         val jvmTest by getting
@@ -44,7 +45,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Msi)
             packageName = "TyuShare"
-            packageVersion = "1.0.6"
+            packageVersion = "1.0.8"
             description = "Xiao Yu Miao Xiang"
             vendor = "ShirakawaTyu"
             includeAllModules = true

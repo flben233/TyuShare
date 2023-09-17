@@ -34,8 +34,15 @@ import java.io.File
 import java.io.FileWriter
 import java.net.URI
 
+// 动画持续时间
 private const val ANIMATION_TIME = 180
 
+/**
+ * 设置界面弹窗
+ * @author ShirakawaTyu
+ * @since 9/17/2023 4:43 PM
+ * @version 1.0
+ */
 @Preview
 @Composable
 fun SettingDialog(onCloseRequest: () -> Unit) {
@@ -47,6 +54,7 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
         showDirectoryPicker = false
     }
 
+    // 等待Dialog加载完毕后再显示AnimatedVisibility的内容，以此来实现进入动画
     val visibility = remember { mutableStateOf(false) }
     LaunchedEffect("setting") {
         visibility.value = true
@@ -63,11 +71,7 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
         AnimatedVisibility(
             visible = visibility.value,
             enter = fadeIn(animationSpec = tween(ANIMATION_TIME)),
-            exit = fadeOut(
-                animationSpec = tween(
-                    ANIMATION_TIME
-                )
-            )
+            exit = fadeOut(animationSpec = tween(ANIMATION_TIME))
         ) {
             Surface(
                 color = MaterialTheme.colorScheme.background,
@@ -76,12 +80,16 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
             ) {
                 Column(Modifier.padding(15.dp), verticalArrangement = Arrangement.SpaceBetween) {
                     Column {
+                        // 标题
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Filled.Settings, "")
                             Spacer(Modifier.width(5.dp))
                             Text("设置", fontWeight = FontWeight.Bold)
                         }
+
                         Spacer(Modifier.height(10.dp))
+
+                        // 系统设置区域
                         Text("系统设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 5.dp))
                         SwitchWithTag("开机启动", applicationSetting.launchWithSystem.value) {
                             applicationSetting.launchWithSystem.value = it
@@ -90,6 +98,8 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
                         SwitchWithTag("启动后显示程序窗口", applicationSetting.defaultOpenWindow.value) {
                             applicationSetting.defaultOpenWindow.value = it
                         }
+
+                        // 文件设置区域
                         Text("文件接收设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
                         Text("文件默认保存位置")
                         OutlinedButton(
@@ -103,10 +113,14 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
                                 Icon(painter = painterResource("/icons/more_horiz.svg"), "", Modifier.height(15.dp))
                             }
                         }
+
+                        // 音频设置区域
                         Text("音频设置", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
                         Button(onClick = { openBrowser("https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip") }) {
                             Text("下载VB-Cable音频驱动")
                         }
+
+                        // 项目地址
                         Text("项目地址", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
                         OutlinedButton(
                             onClick = { openBrowser("https://github.com/flben233/TyuShare") },
@@ -116,6 +130,7 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
                             Text("https://github.com/flben233/TyuShare", fontSize = 15.sp)
                         }
                     }
+
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                         Button(onClick = {
                             CoroutineScope(Dispatchers.Default).launch {

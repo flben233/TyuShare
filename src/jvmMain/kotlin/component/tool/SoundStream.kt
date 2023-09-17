@@ -22,6 +22,13 @@ class SoundStreamMode {
     }
 }
 
+
+/**
+ * 音频串流工具卡片
+ * @author ShirakawaTyu
+ * @since 9/17/2023 5:03 PM
+ * @version 1.0
+ */
 @Composable
 fun SoundStream(modifier: Modifier = Modifier) {
     var expended by remember { mutableStateOf(false) }
@@ -29,7 +36,6 @@ fun SoundStream(modifier: Modifier = Modifier) {
         expended = false
         applicationSetting.soundStreamMode.value = text
         if (applicationSetting.soundStreamStatus.value) {
-//            SoundStreamService.restartSoundStream { applicationSetting.soundStreamStatus.value = true }
             SoundStreamService.restart()
         }
     }
@@ -43,10 +49,8 @@ fun SoundStream(modifier: Modifier = Modifier) {
                 Switch(applicationSetting.soundStreamStatus.value, {
                     applicationSetting.soundStreamStatus.value = it
                     if (it) {
-//                        SoundStreamService.start()
                         SoundStreamService.sendCommendAndStart()
                     } else {
-//                        SoundStreamService.stop()
                         SoundStreamService.sendCommendAndStop()
                     }
                 })
