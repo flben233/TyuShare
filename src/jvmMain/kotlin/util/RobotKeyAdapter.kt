@@ -1,7 +1,10 @@
 package util
 
+import androidx.compose.ui.input.pointer.PointerButton
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.*
+import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
+import java.awt.event.MouseEvent
 
 sealed class RobotKeyAdapter {
     companion object Default: RobotKeyAdapter()
@@ -128,6 +131,15 @@ sealed class RobotKeyAdapter {
             VC_UNDEFINED -> KeyEvent.VK_UNDEFINED
 
             else -> KeyEvent.VK_UNDEFINED
+        }
+    }
+
+    fun btnIndexToMask(pointerButton: PointerButton?): Int? {
+        return when (pointerButton?.index) {
+            PointerButton.Primary.index -> InputEvent.BUTTON1_DOWN_MASK
+            PointerButton.Secondary.index -> InputEvent.BUTTON3_DOWN_MASK
+            PointerButton.Tertiary.index -> InputEvent.BUTTON2_DOWN_MASK
+            else -> null
         }
     }
 }

@@ -1,7 +1,6 @@
 package service
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.input.pointer.PointerButton
 import androidx.compose.ui.input.pointer.PointerEvent
 import applicationSetting
 import com.github.kwhat.jnativehook.GlobalScreen
@@ -20,15 +19,18 @@ import service.interfaces.BidirectionalService
 import service.listener.GlobalKeyboardListener
 import util.CommendUtil
 import util.LoggerUtil
+import util.RobotKeyAdapter
 import java.awt.MouseInfo
 import java.awt.Point
 import java.awt.Robot
-import java.awt.event.InputEvent
+import java.awt.Toolkit
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.roundToInt
 
 /**
  * 键鼠共享服务
@@ -37,11 +39,11 @@ import java.util.*
  * @version 1.0
  */
 sealed class KeyboardShareService : BidirectionalService {
-    // TODO: 改用TCP传输
+
     companion object Default : KeyboardShareService()
 
     // 按键最长按压时间
-    private val keyTimeout: Long = 5000L
+    private val keyTimeout: Long = 16000L
 
     private val servicePort = SERVICE_PORT + 5
     private val udpSocket: DatagramSocket = DatagramSocket(servicePort)
@@ -49,6 +51,9 @@ sealed class KeyboardShareService : BidirectionalService {
     private val robot: Robot = Robot()
     private var listenJob: Job? = null
     private val keyEventListener: GlobalKeyboardListener = GlobalKeyboardListener()
+    private val mouseCache = ConcurrentHashMap<Int, Timer>()
+    private val keyCache = ConcurrentHashMap<Int, Timer>()
+    private val densityDpi = Toolkit.getDefaultToolkit().screenResolution
     var defaultPos: Point? = null
 
     override fun sendCommendAndStop() {
@@ -85,7 +90,8 @@ sealed class KeyboardShareService : BidirectionalService {
         showMask.value = false
         try {
             GlobalScreen.removeNativeKeyListener(keyEventListener)
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
     }
 
     fun restart() {
@@ -111,14 +117,20 @@ sealed class KeyboardShareService : BidirectionalService {
             val action = KeyAction(
                 offsetX,
                 offsetY,
-                btnIndexToMask(event.button),
+                RobotKeyAdapter.btnIndexToMask(event.button),
                 first.scrollDelta.y.toInt(),
                 first.pressed,
                 null,
-                false
+                false,
+                densityDpi
             )
             sendKey(action)
         }
+    }
+
+    fun sendKeyboard(rawKey: Int, keyPressed: Boolean) {
+        val action = KeyAction(keyPressed = keyPressed, key = RobotKeyAdapter.getRobotKeyCode(rawKey), dpi = densityDpi)
+        KeyboardShareService.sendKey(action)
     }
 
     /**
@@ -143,15 +155,6 @@ sealed class KeyboardShareService : BidirectionalService {
         }
     }
 
-    private fun btnIndexToMask(pointerButton: PointerButton?): Int? {
-        return when (pointerButton?.index) {
-            PointerButton.Primary.index -> InputEvent.BUTTON1_DOWN_MASK
-            PointerButton.Secondary.index -> InputEvent.BUTTON3_DOWN_MASK
-            PointerButton.Tertiary.index -> InputEvent.BUTTON2_DOWN_MASK
-            else -> null
-        }
-    }
-
     private fun listenKeyFromUdp() {
         listenJob = CoroutineScope(Dispatchers.IO).launch {
             val udpPacket = DatagramPacket(ByteArray(bufSize), bufSize)
@@ -170,38 +173,91 @@ sealed class KeyboardShareService : BidirectionalService {
     private fun handleKey(action: KeyAction) {
         CoroutineScope(Dispatchers.IO).launch {
             if (action.key != null && action.key != 0) {
-                try {
-                    if (action.keyPressed) {
-                        robot.keyPress(action.key!!)
-                        Timer().schedule(object: TimerTask() {
-                            override fun run() {
-                                robot.keyRelease(action.key!!)
-                            }
-                        }, keyTimeout)
-                    } else {
-                        robot.keyRelease(action.key!!)
-                    }
-                } catch (e: Exception) {
-                    LoggerUtil.logStackTrace(e)
-                    println(action.key)
-                }
+                handleKeyboard(action)
             } else {
-                robot.mouseWheel(action.mouseScroll)
-                val location = MouseInfo.getPointerInfo().location
-                robot.mouseMove(location.x + action.mouseX, location.y + action.mouseY)
-                action.mouseButton?.let {
-                    if (action.mousePressed) {
-                        robot.mousePress(it)
-                        Timer().schedule(object: TimerTask() {
-                            override fun run() {
-                                robot.mouseRelease(it)
-                            }
-                        }, keyTimeout)
-                    } else {
-                        robot.mouseRelease(it)
-                    }
-                }
+                handleMouse(action)
             }
+        }
+    }
+
+    private fun handleMouse(action: KeyAction) {
+        robot.mouseWheel(action.mouseScroll)
+        val location = MouseInfo.getPointerInfo().location
+        robot.mouseMove(location.x + scale(action.mouseX, action.dpi), location.y + scale(action.mouseY, action.dpi))
+        action.mouseButton?.let {
+            if (action.mousePressed) {
+                updateTimer(it, mouseCache,
+                    task = {
+                        robot.mouseRelease(it)
+                        mouseCache.remove(it)
+                    },
+                    ifNotContains = {
+                        robot.mousePress(it)
+                    })
+            } else {
+                robot.mouseRelease(it)
+                keyCache[it]?.cancel()
+                mouseCache.remove(it)
+            }
+        }
+    }
+
+    private fun handleKeyboard(action: KeyAction) {
+        try {
+            action.key?.let {
+                if (action.keyPressed) {
+                    updateTimer(it, keyCache,
+                        task = {
+                            robot.keyRelease(it)
+                            keyCache.remove(it)
+                        },
+                        ifNotContains = {
+                            robot.keyPress(it)
+                        })
+                } else {
+                    robot.keyRelease(it)
+                    keyCache[it]?.cancel()
+                    keyCache.remove(it)
+                }
+
+            }
+        } catch (e: Exception) {
+            LoggerUtil.logStackTrace(e)
+            println(action.key)
+        }
+    }
+
+    private fun scale(pixels: Int, originDpi: Int): Int {
+        return (pixels.toDouble() * (densityDpi / originDpi.toDouble())).roundToInt()
+    }
+
+    private fun updateTimer(
+        key: Int,
+        cache: ConcurrentHashMap<Int, Timer>,
+        task: () -> Unit,
+        ifNotContains: () -> Unit
+    ) {
+        val contains = cache.contains(key)
+        val timer = if (!contains) {
+            Timer()
+        } else {
+            val t = cache[key]
+            if (t != null) {
+                t.cancel()
+                t
+            } else {
+                Timer()
+            }
+        }
+        val timerTask = object : TimerTask() {
+            override fun run() {
+                task()
+            }
+        }
+        timer.schedule(timerTask, keyTimeout)
+        cache[key] = timer
+        if (!contains) {
+            ifNotContains()
         }
     }
 }

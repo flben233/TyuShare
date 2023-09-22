@@ -17,7 +17,8 @@ data class KeyAction (
     var mouseScroll: Int = 0,
     var mousePressed: Boolean = false,
     var key: Int? = null,
-    var keyPressed: Boolean = false
+    var keyPressed: Boolean = false,
+    var dpi: Int
 ) {
     override fun toString(): String {
         return "KeyAction(mouseX=$mouseX, mouseY=$mouseY, mouseButton=$mouseButton, mouseScroll=$mouseScroll, mousePressed=$mousePressed, key=$key, keyPressed=$keyPressed)"

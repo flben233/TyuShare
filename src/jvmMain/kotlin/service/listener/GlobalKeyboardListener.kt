@@ -1,12 +1,9 @@
 package service.listener
 
-import com.github.kwhat.jnativehook.NativeInputEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
-import model.KeyAction
 import service.KeyboardShareService
-import util.LoggerUtil
-import util.RobotKeyAdapter
+import util.NativeEventUtil
 
 
 /**
@@ -18,30 +15,17 @@ import util.RobotKeyAdapter
 class GlobalKeyboardListener: NativeKeyListener {
 
     override fun nativeKeyPressed(nativeEvent: NativeKeyEvent?) {
-        if (nativeEvent != null) {
-            try {
-                val field = NativeInputEvent::class.java.getDeclaredField("reserved")
-                field.isAccessible = true
-                field.setShort(nativeEvent, (0x01).toShort())
-            } catch (e: Exception) {
-                LoggerUtil.logStackTrace(e)
-            }
-            val action = KeyAction(keyPressed = true, key = RobotKeyAdapter.getRobotKeyCode(nativeEvent.keyCode))
-            KeyboardShareService.sendKey(action)
-        }
+        handleKey(nativeEvent, true)
     }
 
     override fun nativeKeyReleased(nativeEvent: NativeKeyEvent?) {
+        handleKey(nativeEvent, false)
+    }
+
+    private fun handleKey(nativeEvent: NativeKeyEvent?, pressed: Boolean) {
         if (nativeEvent != null) {
-            try {
-                val field = NativeInputEvent::class.java.getDeclaredField("reserved")
-                field.isAccessible = true
-                field.setShort(nativeEvent, (0x01).toShort())
-            } catch (e: Exception) {
-                LoggerUtil.logStackTrace(e)
-            }
-            val action = KeyAction(keyPressed = false, key = RobotKeyAdapter.getRobotKeyCode(nativeEvent.keyCode))
-            KeyboardShareService.sendKey(action)
+            NativeEventUtil.consumeEvent(nativeEvent)
+            KeyboardShareService.sendKeyboard(nativeEvent.keyCode, pressed)
         }
     }
 }
