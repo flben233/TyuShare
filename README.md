@@ -31,3 +31,12 @@
 3. 在小雨妙享内选择当前电脑作为 发送方/接收方，然后打开开关即可
 
 ![](https://res.shirakawatyu.top/16b26f8e0b534e51af3d3f04dfae597f.png)
+
+## 使用的开源项目
+[compose-multiplatform](https://github.com/JetBrains/compose-multiplatform)
+[flatlaf](https://github.com/JFormDesigner/FlatLaf)
+[hutool](https://github.com/dromara/hutool)
+[kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization)
+[oshi](https://github.com/oshi/oshi)
+[mpfilepicker](https://github.com/Wavesonics/compose-multiplatform-file-picker)
+[jnativehook](https://github.com/kwhat/jnativehook)
