@@ -1,6 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="小雨妙享-jvm-1.0-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/build/libs</output-path>
-    <root id="archive" name="小雨妙享-jvm-1.0-SNAPSHOT.jar" />
-  </artifact>
-</component>

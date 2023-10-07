@@ -2,12 +2,25 @@
 ## 安装
 1. 安装[VB-Cable](https://vb-audio.com/Cable/)音频驱动，音频共享用到了这个
 2. 下载Release中的安装包进行安装即可
+
 ## 已知问题
-1. 因为compose-desktop打包的限制，在系统中这个软件的名字叫做 `TyuShare`，任务管理器里显示为 `Xiao Yu Miao Xiang` ，并且更新软件时会把原本的设置覆盖掉
+1. 因为compose-desktop打包的限制，在系统中这个软件的名字叫做 `TyuShare`，任务管理器里显示为 `Xiao Yu Miao Xiang` ，~~并且更新软件时会把原本的设置覆盖掉 (早在0.3就修复了)~~
 2. 在两台不同分辨率的显示器之间拖动程序窗口可能会出现布局错乱
-3. 从某些地方复制带样式的文本可能会导致剪贴板共享失效
+3. ~~从某些地方复制带样式的文本可能会导致剪贴板共享失效 (早在0.6就修复了)~~
+4. 键鼠共享卡顿
+5. 键鼠共享快捷键响应不正确
+
+## TODO
+1. 开机自启添加以管理员身份运行，提醒用户以管理员运行时才能点击管理员运行的程序窗口
+2. 文件拖拽发送
+3. 设置界面限制高度并添加滚动条
+4. 自动检查更新，检查版本号即可，有更新就跳转下载页面
+5. 当本机为主机时自动切换对方角色
+6. 音频输出自动切换
+
 ## 使用
 可以去[这里](https://note.shirakawatyu.top/article/126)看，也可以看下面的
+
 ### 连接
 
 框内输入目标电脑 IP，点击连接。或者点击旁边的历史连接记录也可以连接。
@@ -31,3 +44,12 @@
 3. 在小雨妙享内选择当前电脑作为 发送方/接收方，然后打开开关即可
 
 ![](https://res.shirakawatyu.top/16b26f8e0b534e51af3d3f04dfae597f.png)
+
+## 使用的开源项目
+[compose-multiplatform](https://github.com/JetBrains/compose-multiplatform)
+[flatlaf](https://github.com/JFormDesigner/FlatLaf)
+[hutool](https://github.com/dromara/hutool)
+[kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization)
+[oshi](https://github.com/oshi/oshi)
+[mpfilepicker](https://github.com/Wavesonics/compose-multiplatform-file-picker)
+[jnativehook](https://github.com/kwhat/jnativehook)
