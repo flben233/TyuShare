@@ -30,7 +30,6 @@ import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.roundToInt
 
 /**
  * 键鼠共享服务
@@ -53,7 +52,9 @@ sealed class KeyboardShareService : BidirectionalService {
     private val keyEventListener: GlobalKeyboardListener = GlobalKeyboardListener()
     private val mouseCache = ConcurrentHashMap<Int, Timer>()
     private val keyCache = ConcurrentHashMap<Int, Timer>()
-    private val densityDpi = Toolkit.getDefaultToolkit().screenResolution
+    private val toolkit = Toolkit.getDefaultToolkit()
+    private val densityDpi = toolkit.screenResolution
+    private val screenSize = toolkit.screenSize
     var defaultPos: Point? = null
 
     override fun sendCommendAndStop() {
@@ -110,22 +111,17 @@ sealed class KeyboardShareService : BidirectionalService {
     fun sendMouse(event: PointerEvent) {
         val first = event.changes.first()
         val location = MouseInfo.getPointerInfo().location
-        val offsetX = location.x - defaultPos!!.x
-        val offsetY = location.y - defaultPos!!.y
-        if ((offsetY != 0 && offsetX != 0) || (event.button != null) || (first.scrollDelta.y != 0f)) {
-            robot.mouseMove(defaultPos!!.x, defaultPos!!.y)
-            val action = KeyAction(
-                offsetX,
-                offsetY,
-                RobotKeyAdapter.btnIndexToMask(event.button),
-                first.scrollDelta.y.toInt(),
-                first.pressed,
-                null,
-                false,
-                densityDpi
-            )
-            sendKey(action)
-        }
+        val action = KeyAction(
+            location.x / screenSize.getWidth(),
+            location.y  / screenSize.getHeight(),
+            RobotKeyAdapter.btnIndexToMask(event.button),
+            first.scrollDelta.y.toInt(),
+            first.pressed,
+            null,
+            false,
+            densityDpi
+        )
+        sendKey(action)
     }
 
     fun sendKeyboard(rawKey: Int, keyPressed: Boolean) {
@@ -182,8 +178,9 @@ sealed class KeyboardShareService : BidirectionalService {
 
     private fun handleMouse(action: KeyAction) {
         robot.mouseWheel(action.mouseScroll)
-        val location = MouseInfo.getPointerInfo().location
-        robot.mouseMove(location.x + scale(action.mouseX, action.dpi), location.y + scale(action.mouseY, action.dpi))
+        robot.mouseMove((action.mouseX * screenSize.getWidth()).toInt(),
+            (action.mouseY * screenSize.getHeight()).toInt()
+        )
         action.mouseButton?.let {
             if (action.mousePressed) {
                 updateTimer(it, mouseCache,
@@ -225,10 +222,6 @@ sealed class KeyboardShareService : BidirectionalService {
             LoggerUtil.logStackTrace(e)
             println(action.key)
         }
-    }
-
-    private fun scale(pixels: Int, originDpi: Int): Int {
-        return (pixels.toDouble() * (densityDpi / originDpi.toDouble())).roundToInt()
     }
 
     private fun updateTimer(

@@ -2,10 +2,8 @@ package service.listener
 
 import applicationSetting
 import cn.hutool.core.collection.ConcurrentHashSet
-import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
-import kotlinx.coroutines.GlobalScope
 import service.KeyboardShareService
 
 
@@ -20,6 +18,7 @@ class HotkeyListener: NativeKeyListener {
     override fun nativeKeyPressed(nativeEvent: NativeKeyEvent?) {
         keyCache.add(nativeEvent?.keyCode)
         if (keyCache.contains(NativeKeyEvent.VC_F11) && keyCache.contains(NativeKeyEvent.VC_F12)) {
+            keyCache.clear()
             if (applicationSetting.keyboardShareStatus.value) {
                 KeyboardShareService.sendCommendAndStop()
                 KeyboardShareService.stop()

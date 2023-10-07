@@ -50,8 +50,13 @@ fun App(modifier: Modifier = Modifier) {
     }
 }
 
+
+// TODO: 开机自启添加以管理员身份运行，提醒用户以管理员运行时才能点击管理员运行的程序窗口
+// TODO: 文件拖拽发送
+// TODO: 设置界面限制高度并添加滚动条
+// TODO: 自动检查更新，检查版本号即可，有更新就跳转下载页面
+// TODO: 当本机为主机时自动切换对方角色
 // TODO: 音频输出自动切换
-// TODO: 窗口阴影还要调一调
 fun main() = application {
     FlatLightLaf.setup()
     GlobalScreen.setEventDispatcher(VoidDispatchService())

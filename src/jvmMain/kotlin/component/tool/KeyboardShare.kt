@@ -7,7 +7,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.PointerInputScope
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
@@ -19,7 +21,10 @@ import androidx.compose.ui.window.rememberWindowState
 import applicationSetting
 import component.material.MaterialCard
 import service.KeyboardShareService
+import java.awt.Cursor
+import java.awt.Point
 import java.awt.Toolkit
+import java.awt.image.BufferedImage
 
 class KeyboardMode {
     companion object {
@@ -61,7 +66,7 @@ fun KeyboardShare(modifier: Modifier) {
 
     MaterialCard(
         "键鼠共享",
-        "操作将从控制端发送至被控端，使用F11+F12可快速切换状态",
+        "建议以管理员身份运行，使用F11+F12可快速切换状态",
         modifier = modifier
     ) {
         Row(
@@ -98,6 +103,7 @@ fun KeyboardShare(modifier: Modifier) {
         transparent = true,
         visible = showMask.value,
         state = maskState,
+        resizable = false
     ) {
         val dpi = Toolkit.getDefaultToolkit().screenResolution
         val screenSize = Toolkit.getDefaultToolkit().screenSize
@@ -111,8 +117,17 @@ fun KeyboardShare(modifier: Modifier) {
         )
         maskState.position = WindowPosition(0.dp, 0.dp)
         Surface(
-            modifier = Modifier.pointerInput(Unit, onMouseEvent).alpha(0.2f).fillMaxSize(),
+            modifier = Modifier.pointerInput(Unit, onMouseEvent).alpha(0.2f).fillMaxSize()
+                .pointerHoverIcon(PointerIcon(createEmptyCursor())),
             color = Color.Black
         ) {}
     }
+}
+
+private fun createEmptyCursor(): Cursor {
+    return Toolkit.getDefaultToolkit().createCustomCursor(
+        BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB),
+        Point(0, 0),
+        "Empty Cursor"
+    )
 }

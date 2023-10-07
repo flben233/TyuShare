@@ -40,4 +40,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### CUSTOM ###
 /conveyor/
+/.idea/

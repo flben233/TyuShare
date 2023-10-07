@@ -11,8 +11,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class KeyAction (
-    var mouseX: Int = 0,
-    var mouseY: Int = 0,
+    var mouseX: Double = 0.0,
+    var mouseY: Double = 0.0,
     var mouseButton: Int? = null,
     var mouseScroll: Int = 0,
     var mousePressed: Boolean = false,
