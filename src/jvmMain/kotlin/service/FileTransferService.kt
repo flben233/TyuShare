@@ -1,5 +1,6 @@
 package service
 
+import androidx.compose.ui.window.Notification
 import applicationSetting
 import cn.hutool.core.io.IoUtil
 import common.HttpCommend
@@ -10,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import tray
 import util.CommendUtil
 import java.io.File
 import java.io.FileInputStream
@@ -47,6 +49,7 @@ sealed class FileTransferService {
             outputStream.close()
             client.close()
             fileIn.close()
+            tray.sendNotification(Notification("文件传输", "文件${file.name}发送完成"))
         }
         val headers = HashMap<String, String>()
         headers["File-Name"] = Json.encodeToString(file.name.toByteArray(StandardCharsets.UTF_8))
@@ -76,6 +79,7 @@ sealed class FileTransferService {
             inputStream.close()
             dest.close()
             client.close()
+            tray.sendNotification(Notification("文件传输", "文件已保存至${applicationSetting.fileReceivePath.value}"))
         }
     }
 }
