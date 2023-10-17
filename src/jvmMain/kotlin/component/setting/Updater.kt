@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cn.hutool.core.swing.DesktopUtil
 import cn.hutool.http.HttpUtil
+import cn.hutool.json.JSONUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,6 +41,14 @@ fun Updater() {
 }
 
 private fun checkUpdate(): Boolean {
-    val version = HttpUtil.get("https://tyushare.shirakawatyu.top/api/version")
-    return version.toFloat() > VERSION_CODE
+    try {
+        val apiJson = HttpUtil.get("https://tyushare.shirakawatyu.top")
+        val jsonbObj = JSONUtil.parseObj(apiJson)
+        val version = jsonbObj["tag_name"].toString().toFloat()
+        println(version)
+        return version > VERSION_CODE
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return false
 }
