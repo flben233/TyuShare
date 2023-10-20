@@ -20,8 +20,7 @@ import kotlinx.coroutines.launch
 fun Updater() {
     val updateText = mutableStateOf("当前版本: $VERSION_CODE, 点击检查更新")
     val openBrowser = mutableStateOf(false)
-    Text("检查更新", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
-    OutlinedButton(onClick = {
+    fun check() {
         if (openBrowser.value) {
             DesktopUtil.browse("https://note.shirakawatyu.top/article/148")
         } else {
@@ -35,6 +34,11 @@ fun Updater() {
                 }
             }
         }
+    }
+    check()
+    Text("检查更新", fontWeight = FontWeight.Bold, modifier = Modifier.padding(0.dp, 10.dp))
+    OutlinedButton(onClick = {
+        check()
     }) {
         Text(updateText.value)
     }
