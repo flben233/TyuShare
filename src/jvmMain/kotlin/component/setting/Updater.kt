@@ -30,7 +30,7 @@ fun Updater() {
                     updateText.value = "有更新, 点我打开下载页面"
                     openBrowser.value = true
                 } else {
-                    updateText.value = "已是最新版本"
+                    updateText.value = "当前版本: $VERSION_CODE, 已是最新版本"
                 }
             }
         }

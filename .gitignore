@@ -40,3 +40,4 @@ bin/
 
 ### CUSTOM ###
 /conveyor/
+/.idea/
