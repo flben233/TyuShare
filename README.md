@@ -44,9 +44,15 @@
 
 ## 使用的开源项目
 [compose-multiplatform](https://github.com/JetBrains/compose-multiplatform)
+
 [flatlaf](https://github.com/JFormDesigner/FlatLaf)
+
 [hutool](https://github.com/dromara/hutool)
+
 [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization)
+
 [oshi](https://github.com/oshi/oshi)
+
 [mpfilepicker](https://github.com/Wavesonics/compose-multiplatform-file-picker)
+
 [jnativehook](https://github.com/kwhat/jnativehook)
