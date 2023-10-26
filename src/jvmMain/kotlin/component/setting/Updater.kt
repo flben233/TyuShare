@@ -19,16 +19,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun Updater() {
     val updateText = mutableStateOf("当前版本: $VERSION_CODE, 点击检查更新")
-    val openBrowser = mutableStateOf(false)
+    var openBrowser = false
     fun check() {
-        if (openBrowser.value) {
+        if (openBrowser) {
             DesktopUtil.browse("https://note.shirakawatyu.top/article/148")
         } else {
             updateText.value = "正在检查..."
             CoroutineScope(Dispatchers.IO).launch {
                 if (checkUpdate()) {
                     updateText.value = "有更新, 点我打开下载页面"
-                    openBrowser.value = true
+                    openBrowser = true
                 } else {
                     updateText.value = "当前版本: $VERSION_CODE, 已是最新版本"
                 }
@@ -48,7 +48,7 @@ private fun checkUpdate(): Boolean {
     try {
         val apiJson = HttpUtil.get("https://tyushare.shirakawatyu.top")
         val jsonbObj = JSONUtil.parseObj(apiJson)
-        val version = jsonbObj["tag_name"].toString().toFloat()
+        val version = jsonbObj["tag_name"].toString().toDouble()
         println(version)
         return version > VERSION_CODE
     } catch (e: Exception) {
