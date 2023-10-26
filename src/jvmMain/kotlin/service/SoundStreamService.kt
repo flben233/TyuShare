@@ -32,7 +32,7 @@ sealed class SoundStreamService : BidirectionalService {
     private var soundThread: Thread? = null
     private val audioFormat = AudioFormat(48000.0f, 16, 2, true, false)
     private var nByte = 0
-    private val bufSize = 64
+    private val bufSize = 128
     private val buffer = ByteArray(bufSize)
     private val executor = Executors.newSingleThreadScheduledExecutor()
 
@@ -112,20 +112,12 @@ sealed class SoundStreamService : BidirectionalService {
         val sourceDataLine = AudioSystem.getLine(sourceInfo) as SourceDataLine
         sourceDataLine.open(audioFormat)
         sourceDataLine.start()
-        var packet = DatagramPacket(ByteArray(bufSize), bufSize)
+        val packet = DatagramPacket(ByteArray(bufSize), bufSize)
         soundThread = Thread {
             try {
-                udpSocket.receive(packet)
                 while (packet.length > 0 && applicationSetting.soundStreamStatus.value) {
-                    var ready = false
-                    executor.execute {
-                        val newPacket = DatagramPacket(ByteArray(bufSize), bufSize)
-                        udpSocket.receive(newPacket)
-                        packet = newPacket
-                        ready = true
-                    }
+                    udpSocket.receive(packet)
                     sourceDataLine.write(packet.data, 0, packet.length)
-                    while (!ready) Thread.onSpinWait()
                 }
                 sourceDataLine.stop()
                 sourceDataLine.close()
@@ -150,15 +142,13 @@ sealed class SoundStreamService : BidirectionalService {
                 while ((targetDataLine.read(buffer, 0, bufSize).also { nByte = it } > 0)
                         && applicationSetting.soundStreamStatus.value
                 ) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        udpSocket.send(
-                            DatagramPacket(
-                                buffer,
-                                nByte,
-                                InetSocketAddress(ConnectionService.getTargetIp(), soundPort)
-                            )
+                    udpSocket.send(
+                        DatagramPacket(
+                            buffer,
+                            nByte,
+                            InetSocketAddress(ConnectionService.getTargetIp(), soundPort)
                         )
-                    }
+                    )
                 }
                 targetDataLine.stop()
                 targetDataLine.close()
