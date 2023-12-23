@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import service.ConnectionService
+import java.nio.charset.Charset
 
 
 sealed class CommendUtil {
@@ -34,6 +35,7 @@ sealed class CommendUtil {
                 val createPost = HttpUtil.createPost("http://$ipAddress:$SERVICE_PORT")
                 createPost.body(commend)
                 createPost.addHeaders(headers)
+                createPost.charset(Charset.defaultCharset())
                 createPost.execute()
             } catch (e: Exception) {
                 callback(false)

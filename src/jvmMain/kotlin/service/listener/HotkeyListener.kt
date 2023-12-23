@@ -26,6 +26,9 @@ class HotkeyListener: NativeKeyListener {
                 KeyboardShareService.sendCommendAndStart()
             }
         }
+        if (nativeEvent?.keyCode != NativeKeyEvent.VC_F11 && nativeEvent?.keyCode != NativeKeyEvent.VC_F12) {
+            keyCache.clear()
+        }
     }
 
     override fun nativeKeyReleased(nativeEvent: NativeKeyEvent?) {

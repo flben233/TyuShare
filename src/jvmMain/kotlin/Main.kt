@@ -27,7 +27,7 @@ import util.JsonUtil
 
 
 val SETTING_PATH = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\settings.json"
-const val VERSION_CODE = 1.1
+const val VERSION_CODE = 1.2
 val currentView = mutableStateOf(Navigator.CONNECT_VIEW)
 var applicationSetting = JsonUtil.parseJsonFile(SETTING_PATH, ApplicationSetting())
 val isOpen = mutableStateOf(applicationSetting.defaultOpenWindow.value)

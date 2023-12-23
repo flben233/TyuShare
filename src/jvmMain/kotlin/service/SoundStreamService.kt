@@ -2,6 +2,7 @@ package service
 
 import applicationSetting
 import common.HttpCommend
+import component.tool.KeyboardMode
 import component.tool.SoundStreamMode
 import config.SERVICE_PORT
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +43,11 @@ sealed class SoundStreamService : BidirectionalService {
         udpSocket.soTimeout = 1000
     }
 
+    fun start(mode: String) {
+        applicationSetting.soundStreamMode.value = mode
+        start()
+    }
+
     /**
      * 启动音频串流服务，这里会根据当前的设定决定发送数据还是播放音频
      * 一般在接收到请求后调用
@@ -61,7 +67,9 @@ sealed class SoundStreamService : BidirectionalService {
      * @author ShirakawaTyu
      */
     override fun sendCommendAndStart() {
-        CommendUtil.sendCommend(HttpCommend.START_SOUND, callback = {
+        val header = if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER) SoundStreamMode.SPEAKER
+        else SoundStreamMode.SPEAKER
+        CommendUtil.sendCommend(HttpCommend.START_SOUND, headers = mapOf("Mode" to header), callback = {
             if (it) {
                 start()
             }

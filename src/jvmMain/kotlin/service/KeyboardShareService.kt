@@ -28,8 +28,6 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 键鼠共享服务
@@ -41,17 +39,12 @@ sealed class KeyboardShareService : BidirectionalService {
 
     companion object Default : KeyboardShareService()
 
-    // 按键最长按压时间
-    private val keyTimeout: Long = 16000L
-
     private val servicePort = SERVICE_PORT + 5
     private val udpSocket: DatagramSocket = DatagramSocket(servicePort)
     private val bufSize = 4096
     private val robot: Robot = Robot()
     private var listenJob: Job? = null
     private val keyEventListener: GlobalKeyboardListener = GlobalKeyboardListener()
-    private val mouseCache = ConcurrentHashMap<Int, Timer>()
-    private val keyCache = ConcurrentHashMap<Int, Timer>()
     private val toolkit = Toolkit.getDefaultToolkit()
     private val densityDpi = toolkit.screenResolution
     private val screenSize = toolkit.screenSize
@@ -64,11 +57,18 @@ sealed class KeyboardShareService : BidirectionalService {
     }
 
     override fun sendCommendAndStart() {
-        CommendUtil.sendCommend(HttpCommend.START_KEY_SHARE) {
+        val header = if (applicationSetting.keyboardMode.value == KeyboardMode.BE_CONTROLLER) KeyboardMode.CONTROLLER
+                     else KeyboardMode.BE_CONTROLLER
+        CommendUtil.sendCommend(HttpCommend.START_KEY_SHARE, headers = mapOf("Mode" to header)) {
             if (it) {
                 start()
             }
         }
+    }
+
+    fun start(mode: String) {
+        applicationSetting.keyboardMode.value = mode
+        start()
     }
 
     override fun start() {
@@ -183,18 +183,9 @@ sealed class KeyboardShareService : BidirectionalService {
         )
         action.mouseButton?.let {
             if (action.mousePressed) {
-                updateTimer(it, mouseCache,
-                    task = {
-                        robot.mouseRelease(it)
-                        mouseCache.remove(it)
-                    },
-                    ifNotContains = {
-                        robot.mousePress(it)
-                    })
+                robot.mousePress(it)
             } else {
                 robot.mouseRelease(it)
-                keyCache[it]?.cancel()
-                mouseCache.remove(it)
             }
         }
     }
@@ -203,20 +194,10 @@ sealed class KeyboardShareService : BidirectionalService {
         try {
             action.key?.let {
                 if (action.keyPressed) {
-                    updateTimer(it, keyCache,
-                        task = {
-                            robot.keyRelease(it)
-                            keyCache.remove(it)
-                        },
-                        ifNotContains = {
-                            robot.keyPress(it)
-                        })
+                    robot.keyPress(it)
                 } else {
                     robot.keyRelease(it)
-                    keyCache[it]?.cancel()
-                    keyCache.remove(it)
                 }
-
             }
         } catch (e: Exception) {
             LoggerUtil.logStackTrace(e)
@@ -224,33 +205,4 @@ sealed class KeyboardShareService : BidirectionalService {
         }
     }
 
-    private fun updateTimer(
-        key: Int,
-        cache: ConcurrentHashMap<Int, Timer>,
-        task: () -> Unit,
-        ifNotContains: () -> Unit
-    ) {
-        val contains = cache.contains(key)
-        val timer = if (!contains) {
-            Timer()
-        } else {
-            val t = cache[key]
-            if (t != null) {
-                t.cancel()
-                t
-            } else {
-                Timer()
-            }
-        }
-        val timerTask = object : TimerTask() {
-            override fun run() {
-                task()
-            }
-        }
-        timer.schedule(timerTask, keyTimeout)
-        cache[key] = timer
-        if (!contains) {
-            ifNotContains()
-        }
-    }
 }

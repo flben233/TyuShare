@@ -37,7 +37,9 @@ sealed class ConnectionService {
                             currentView.value = Navigator.MAIN_VIEW
                         }
 
-                        HttpCommend.START_SOUND -> SoundStreamService.start()
+                        HttpCommend.START_SOUND -> SoundStreamService.start(
+                            request.getHeader("Mode")
+                        )
                         HttpCommend.CLOSE_SOUND -> SoundStreamService.stop()
                         HttpCommend.START_CLIPBOARD -> ClipboardShareService.start()
                         HttpCommend.STOP_CLIPBOARD -> ClipboardShareService.stop()
@@ -45,7 +47,9 @@ sealed class ConnectionService {
                             request.getHeader("File-Name"),
                             request.getHeader("File-Size").toLong()
                         )
-                        HttpCommend.START_KEY_SHARE -> KeyboardShareService.start()
+                        HttpCommend.START_KEY_SHARE -> KeyboardShareService.start(
+                            request.getHeader("Mode")
+                        )
                         HttpCommend.STOP_KEY_SHARE -> KeyboardShareService.stop()
                     }
                     response.sendOk()
