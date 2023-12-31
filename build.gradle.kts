@@ -45,7 +45,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Msi)
             packageName = "TyuShare"
-            packageVersion = "2.1.7"
+            packageVersion = "2.1.8"
             description = "TyuShare"
             vendor = "ShirakawaTyu"
             includeAllModules = true
