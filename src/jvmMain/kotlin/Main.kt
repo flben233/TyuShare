@@ -24,11 +24,10 @@ import model.ApplicationSetting
 import service.ConnectionService
 import service.listener.HotkeyListener
 import util.JsonUtil
-import util.LoggerUtil
 
 
-var SETTING_PATH = ".\\settings.json"
-const val VERSION_CODE = 1.3
+val SETTING_PATH = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\settings.json"
+const val VERSION_CODE = 1.2
 val currentView = mutableStateOf(Navigator.CONNECT_VIEW)
 var applicationSetting = JsonUtil.parseJsonFile(SETTING_PATH, ApplicationSetting())
 val isOpen = mutableStateOf(applicationSetting.defaultOpenWindow.value)
@@ -40,11 +39,6 @@ var added = false
 @Preview
 fun App(modifier: Modifier = Modifier) {
     ConnectionService.startCommendServer()
-    try {
-        SETTING_PATH = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\settings.json";
-    } catch (e: Exception) {
-        LoggerUtil.logStackTrace(e)
-    }
     MaterialTheme {
         Column(modifier.background(MaterialTheme.colorScheme.background).padding(15.dp, 0.dp, 15.dp, 15.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
