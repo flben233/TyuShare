@@ -23,7 +23,6 @@ import service.ConnectionService
 import util.DateUtil
 import util.HardwareUtil
 import util.JsonUtil
-import util.LoggerUtil
 
 
 /**
@@ -38,15 +37,9 @@ fun ConnectView() {
     var connectBtnText by remember { mutableStateOf("连接") }
     var enable by remember { mutableStateOf(true) }
     var ipAddress by remember { mutableStateOf("") }
-    var historyPath = ".\\history.json"
+    val historyPath = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\history.json"
     val lastConnections = JsonUtil.parseJsonFile(historyPath, mutableListOf<ConnectionItem>())
     var localIp by remember { mutableStateOf(ArrayList<String>()) }
-
-    try {
-        historyPath = "${System.getProperty("user.home")}\\AppData\\Local\\TyuShare\\history.json"
-    } catch (e: Exception) {
-        LoggerUtil.logStackTrace(e)
-    }
 
     fun onConnectBtn(ip: String, then: (Boolean) -> Unit = {}) {
         connectBtnText = "正在连接..."
