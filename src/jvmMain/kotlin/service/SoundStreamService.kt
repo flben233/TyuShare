@@ -35,7 +35,6 @@ sealed class SoundStreamService : BidirectionalService {
     private var nByte = 0
     private val bufSize = 128
     private val buffer = ByteArray(bufSize)
-    private val executor = Executors.newSingleThreadScheduledExecutor()
 
     companion object Default : SoundStreamService()
 
@@ -44,7 +43,7 @@ sealed class SoundStreamService : BidirectionalService {
     }
 
     fun start(mode: String) {
-        applicationSetting.soundStreamMode.value = mode
+        applicationSetting.soundStreamMode.value = if (mode == "1") SoundStreamMode.SPEAKER else SoundStreamMode.LISTENER
         start()
     }
 
@@ -67,8 +66,8 @@ sealed class SoundStreamService : BidirectionalService {
      * @author ShirakawaTyu
      */
     override fun sendCommendAndStart() {
-        val header = if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER) SoundStreamMode.SPEAKER
-        else SoundStreamMode.SPEAKER
+        val header = if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER) "1"
+        else "0"
         CommendUtil.sendCommend(HttpCommend.START_SOUND, headers = mapOf("Mode" to header), callback = {
             if (it) {
                 start()

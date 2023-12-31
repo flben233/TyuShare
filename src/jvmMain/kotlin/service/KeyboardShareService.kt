@@ -57,8 +57,8 @@ sealed class KeyboardShareService : BidirectionalService {
     }
 
     override fun sendCommendAndStart() {
-        val header = if (applicationSetting.keyboardMode.value == KeyboardMode.BE_CONTROLLER) KeyboardMode.CONTROLLER
-                     else KeyboardMode.BE_CONTROLLER
+        val header = if (applicationSetting.keyboardMode.value == KeyboardMode.BE_CONTROLLER) "1"
+                     else "0"
         CommendUtil.sendCommend(HttpCommend.START_KEY_SHARE, headers = mapOf("Mode" to header)) {
             if (it) {
                 start()
@@ -67,7 +67,7 @@ sealed class KeyboardShareService : BidirectionalService {
     }
 
     fun start(mode: String) {
-        applicationSetting.keyboardMode.value = mode
+        applicationSetting.keyboardMode.value = if (mode == "1") KeyboardMode.CONTROLLER else KeyboardMode.BE_CONTROLLER
         start()
     }
 
