@@ -14,8 +14,8 @@ import java.awt.datatransfer.UnsupportedFlavorException
 sealed class ClipboardUtil {
     companion object Default : ClipboardUtil()
 
-    fun getStr(): String? {
-        var str: String? = null
+    fun getStr(): String {
+        var str = ""
         try {
             str = Toolkit.getDefaultToolkit().systemClipboard.getData(DataFlavor.stringFlavor) as String
         } catch (_: UnsupportedFlavorException) {

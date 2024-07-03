@@ -16,6 +16,7 @@ import util.CommendUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.io.OutputStream
 import java.net.ServerSocket
 import java.net.Socket
@@ -41,20 +42,31 @@ sealed class FileTransferService {
     fun sendFile(filePath: String) {
         val file = File(filePath)
         CoroutineScope(Dispatchers.IO).launch {
-            val server = ServerSocket(filePort)
-            val client = server.accept()
-            val outputStream = client.getOutputStream()
-            val fileIn = FileInputStream(filePath)
-            IoUtil.copy(fileIn, outputStream, 4096, FileStreamProgress(file.length()))
-            outputStream.close()
-            client.close()
-            fileIn.close()
+            var server: ServerSocket? = null
+            var client: Socket? = null
+            var outputStream: OutputStream? = null
+            var fileIn: FileInputStream? = null
+            try {
+                server = ServerSocket(filePort)
+                client = server.accept()
+                outputStream = client.getOutputStream()
+                fileIn = FileInputStream(filePath)
+                IoUtil.copy(fileIn, outputStream, 4096, FileStreamProgress(file.length()))
+            } catch (e: Exception) {
+                tray.sendNotification(Notification("文件传输", "文件发送失败"))
+                return@launch
+            } finally {
+                outputStream?.close()
+                client?.close()
+                fileIn?.close()
+                server?.close()
+            }
             tray.sendNotification(Notification("文件传输", "文件${file.name}发送完成"))
         }
         val headers = HashMap<String, String>()
         headers["File-Name"] = Json.encodeToString(file.name.toByteArray(StandardCharsets.UTF_8))
         headers["File-Size"] = file.length().toString()
-        CommendUtil.sendCommend(HttpCommend.SEND_FILE, ConnectionService.getTargetIp(), headers) {}
+        CommendUtil.sendCommend(HttpCommend.SEND_FILE, headers) {}
     }
 
     /**
@@ -70,16 +82,34 @@ sealed class FileTransferService {
             if (!path.exists()) {
                 path.mkdirs()
             }
-            val dest: OutputStream = FileOutputStream(
-                applicationSetting.fileReceivePath.value + File.separator +
-                        String(Json.decodeFromString(fileName) as ByteArray, StandardCharsets.UTF_8)
-            )
-            val inputStream = client.getInputStream()
-            IoUtil.copy(inputStream, dest, 4096, FileStreamProgress(fileSize))
-            inputStream.close()
-            dest.close()
-            client.close()
+            var dest: OutputStream? = null
+            var inputStream: InputStream? = null
+            var file = File(applicationSetting.fileReceivePath.value + File.separator +
+                    String(Json.decodeFromString(fileName) as ByteArray, StandardCharsets.UTF_8))
+            file = renameOnExist(file)
+            try {
+                dest = FileOutputStream(file)
+                inputStream = client.getInputStream()
+                IoUtil.copy(inputStream, dest, 4096, FileStreamProgress(fileSize))
+            } catch (e: Exception) {
+                tray.sendNotification(Notification("文件传输", "文件接收失败"))
+                file.delete()
+                return@launch
+            } finally {
+                dest?.close()
+                inputStream?.close()
+                client.close()
+            }
             tray.sendNotification(Notification("文件传输", "文件已保存至${applicationSetting.fileReceivePath.value}"))
         }
+    }
+
+    private fun renameOnExist(file: File): File {
+        var count = 0
+        var newFile = file
+        while (newFile.exists()) {
+            newFile = File(file.parent, "${file.nameWithoutExtension}(${++count}).${file.extension}")
+        }
+        return newFile
     }
 }

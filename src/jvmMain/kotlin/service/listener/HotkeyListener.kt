@@ -15,9 +15,11 @@ import service.KeyboardShareService
  */
 class HotkeyListener: NativeKeyListener {
     private val keyCache: ConcurrentHashSet<Int> = ConcurrentHashSet()
+    private val key1 = NativeKeyEvent.VC_CONTROL
+    private val key2 = NativeKeyEvent.VC_F10
     override fun nativeKeyPressed(nativeEvent: NativeKeyEvent?) {
         keyCache.add(nativeEvent?.keyCode)
-        if (keyCache.contains(NativeKeyEvent.VC_F11) && keyCache.contains(NativeKeyEvent.VC_F12)) {
+        if (keyCache.contains(key1) && keyCache.contains(key2)) {
             keyCache.clear()
             if (applicationSetting.keyboardShareStatus.value) {
                 KeyboardShareService.sendCommendAndStop()
@@ -26,7 +28,7 @@ class HotkeyListener: NativeKeyListener {
                 KeyboardShareService.sendCommendAndStart()
             }
         }
-        if (nativeEvent?.keyCode != NativeKeyEvent.VC_F11 && nativeEvent?.keyCode != NativeKeyEvent.VC_F12) {
+        if (nativeEvent?.keyCode != key1 && nativeEvent?.keyCode != key2) {
             keyCache.clear()
         }
     }

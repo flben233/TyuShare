@@ -7,16 +7,17 @@ import com.github.kwhat.jnativehook.GlobalScreen
 import common.HttpCommend
 import component.tool.KeyboardMode
 import component.tool.showMask
-import config.SERVICE_PORT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import model.KeyAction
+import model.Payload
+import model.PayloadType
 import service.interfaces.BidirectionalService
 import service.listener.GlobalKeyboardListener
+import service.transmission.UdpService
 import util.CommendUtil
 import util.LoggerUtil
 import util.RobotKeyAdapter
@@ -24,10 +25,6 @@ import java.awt.MouseInfo
 import java.awt.Point
 import java.awt.Robot
 import java.awt.Toolkit
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetSocketAddress
-import java.nio.charset.StandardCharsets
 
 /**
  * 键鼠共享服务
@@ -39,11 +36,7 @@ sealed class KeyboardShareService : BidirectionalService {
 
     companion object Default : KeyboardShareService()
 
-    private val servicePort = SERVICE_PORT + 5
-    private val udpSocket: DatagramSocket = DatagramSocket(servicePort)
-    private val bufSize = 4096
     private val robot: Robot = Robot()
-    private var listenJob: Job? = null
     private val keyEventListener: GlobalKeyboardListener = GlobalKeyboardListener()
     private val toolkit = Toolkit.getDefaultToolkit()
     private val densityDpi = toolkit.screenResolution
@@ -58,8 +51,8 @@ sealed class KeyboardShareService : BidirectionalService {
 
     override fun sendCommendAndStart() {
         val header = if (applicationSetting.keyboardMode.value == KeyboardMode.BE_CONTROLLER) "1"
-                     else "0"
-        CommendUtil.sendCommend(HttpCommend.START_KEY_SHARE, headers = mapOf("Mode" to header)) {
+        else "0"
+        CommendUtil.sendCommend(HttpCommend.START_KEY_SHARE, mapOf("Mode" to header)) {
             if (it) {
                 start()
             }
@@ -74,15 +67,11 @@ sealed class KeyboardShareService : BidirectionalService {
     override fun start() {
         applicationSetting.keyboardShareStatus.value = true
         KeyboardShareService.defaultPos = MouseInfo.getPointerInfo().location
-        if (applicationSetting.keyboardMode.value == KeyboardMode.BE_CONTROLLER) {
-            listenKeyFromUdp()
-        } else {
-            try {
-                GlobalScreen.addNativeKeyListener(keyEventListener)
-                showMask.value = true
-            } catch (e: Exception) {
-                LoggerUtil.logStackTrace(e)
-            }
+        try {
+            GlobalScreen.addNativeKeyListener(keyEventListener)
+            showMask.value = (applicationSetting.keyboardMode.value == KeyboardMode.CONTROLLER)
+        } catch (e: Exception) {
+            LoggerUtil.logStackTrace(e)
         }
     }
 
@@ -113,7 +102,7 @@ sealed class KeyboardShareService : BidirectionalService {
         val location = MouseInfo.getPointerInfo().location
         val action = KeyAction(
             location.x / screenSize.getWidth(),
-            location.y  / screenSize.getHeight(),
+            location.y / screenSize.getHeight(),
             RobotKeyAdapter.btnIndexToMask(event.button),
             first.scrollDelta.y.toInt(),
             first.pressed,
@@ -136,49 +125,27 @@ sealed class KeyboardShareService : BidirectionalService {
      */
     fun sendKey(action: KeyAction) {
         CoroutineScope(Dispatchers.IO).launch {
-            val json = Json.encodeToString(action).toByteArray(StandardCharsets.UTF_8)
-            val buffer = ByteArray(bufSize)
-            for ((index, byte) in json.withIndex()) {
-                buffer[index] = byte
-            }
-            udpSocket.send(
-                DatagramPacket(
-                    buffer,
-                    json.size,
-                    InetSocketAddress(ConnectionService.getTargetIp(), servicePort)
-                )
-            )
+            val json = Json.encodeToString(action)
+            UdpService.sendPayload(Payload(PayloadType.KEY_ACTION, json))
         }
     }
 
-    private fun listenKeyFromUdp() {
-        listenJob = CoroutineScope(Dispatchers.IO).launch {
-            val udpPacket = DatagramPacket(ByteArray(bufSize), bufSize)
-            while (applicationSetting.keyboardShareStatus.value) {
-                udpSocket.receive(udpPacket)
-                val actionJson = String(
-                    udpPacket.data.sliceArray(IntRange(0, udpPacket.length - 1)),
-                    StandardCharsets.UTF_8
-                ).trim()
-                val keyAction = Json.decodeFromString<KeyAction>(actionJson)
-                handleKey(keyAction)
-            }
-        }
-    }
-
-    private fun handleKey(action: KeyAction) {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (action.key != null && action.key != 0) {
-                handleKeyboard(action)
-            } else {
-                handleMouse(action)
+    fun handleKey(action: KeyAction) {
+        if (applicationSetting.keyboardMode.value == KeyboardMode.BE_CONTROLLER) {
+            CoroutineScope(Dispatchers.IO).launch {
+                if (action.key != null && action.key != 0) {
+                    handleKeyboard(action)
+                } else {
+                    handleMouse(action)
+                }
             }
         }
     }
 
     private fun handleMouse(action: KeyAction) {
         robot.mouseWheel(action.mouseScroll)
-        robot.mouseMove((action.mouseX * screenSize.getWidth()).toInt(),
+        robot.mouseMove(
+            (action.mouseX * screenSize.getWidth()).toInt(),
             (action.mouseY * screenSize.getHeight()).toInt()
         )
         action.mouseButton?.let {

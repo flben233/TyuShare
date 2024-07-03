@@ -2,12 +2,12 @@ package service
 
 import androidx.compose.ui.window.Notification
 import applicationSetting
-import cn.hutool.http.HttpUtil
-import cn.hutool.http.server.SimpleServer
 import common.HttpCommend
-import config.SERVICE_PORT
 import kotlinx.coroutines.*
+import model.Payload
+import model.PayloadType
 import service.interfaces.BidirectionalService
+import service.transmission.HttpService
 import tray
 import util.ClipboardUtil
 import util.CommendUtil
@@ -23,10 +23,8 @@ import util.LoggerUtil
 sealed class ClipboardShareService: BidirectionalService {
     companion object Default : ClipboardShareService()
 
-    private var server: SimpleServer? = null
-    private val clipPort = SERVICE_PORT + 2
-    private var serverCoroutine: Job? = null
     private var clipboardCoroutine: Job? = null
+    private var started: Boolean = false
 
     /**
      * 向对方发送启动剪贴板共享服务请求然后启动自身服务
@@ -43,20 +41,8 @@ sealed class ClipboardShareService: BidirectionalService {
      * @author ShirakawaTyu
      */
     override fun start() {
-        if (serverCoroutine == null) {
-            server = HttpUtil.createServer(clipPort)
-            serverCoroutine = CoroutineScope(Dispatchers.Default).launch {
-                server!!.addAction("/clipboard") { request, response ->
-                    if (request.body != ClipboardUtil.getStr() && request.body.isNotEmpty()) {
-                        ClipboardUtil.setStr(request.body)
-                        tray.sendNotification(Notification("剪贴板", request.body))
-                    }
-                    response.sendOk()
-                }
-                server!!.start()
-            }
-            startListen()
-        }
+        started = true
+        startListen()
     }
 
     /**
@@ -64,11 +50,9 @@ sealed class ClipboardShareService: BidirectionalService {
      * @author ShirakawaTyu
      */
     override fun stop() {
-        server?.rawServer?.stop(1)
-        serverCoroutine?.cancel()
-        serverCoroutine = null
         clipboardCoroutine?.cancel()
         clipboardCoroutine = null
+        started = false
     }
 
     /**
@@ -81,32 +65,35 @@ sealed class ClipboardShareService: BidirectionalService {
         }
     }
 
+    fun handleClipboard(clipboard: String) {
+        if (clipboard != ClipboardUtil.getStr() && clipboard.isNotEmpty()) {
+            ClipboardUtil.setStr(clipboard)
+            tray.sendNotification(Notification("剪贴板", clipboard))
+        }
+    }
+
     /**
      * 开始监听剪贴板，这里使用轮询实现而不是监听器
      * 原因是java自带的监听器遇到隐藏字符时常常失效
      * @author ShirakawaTyu
      */
     private fun startListen() {
-        if (clipboardCoroutine == null) {
-            clipboardCoroutine = CoroutineScope(Dispatchers.Default).launch {
-                var lastString: String? = ClipboardUtil.getStr()
-                while (applicationSetting.clipboardStatus.value) {
-                    if (ConnectionService.getTargetIp().length > 1) {
-                        try {
-                            val contentStr = ClipboardUtil.getStr()
-                            if (contentStr != lastString && !contentStr.isNullOrEmpty()) {
-                                HttpUtil.post(
-                                    "http://${ConnectionService.getTargetIp()}:$clipPort/clipboard",
-                                    contentStr
-                                )
-                                lastString = contentStr
-                            }
-                        } catch (e: Exception) {
-                            LoggerUtil.logStackTrace(e)
-                        }
+        if (clipboardCoroutine?.isActive == true) {
+            return
+        }
+        clipboardCoroutine = CoroutineScope(Dispatchers.Default).launch {
+            var lastString: String = ClipboardUtil.getStr()
+            while (applicationSetting.clipboardStatus.value) {
+                try {
+                    val contentStr = ClipboardUtil.getStr()
+                    if (contentStr != lastString && contentStr.isNotEmpty()) {
+                        HttpService.sendPayload(Payload(PayloadType.CLIPBOARD, contentStr))
+                        lastString = contentStr
                     }
-                    delay(100)
+                } catch (e: Exception) {
+                    LoggerUtil.logStackTrace(e)
                 }
+                delay(100)
             }
         }
     }

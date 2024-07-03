@@ -1,22 +1,37 @@
 package util
 
-import cn.hutool.http.HttpUtil
-import config.SERVICE_PORT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import service.ConnectionService
-import java.nio.charset.Charset
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import model.Commend
+import model.Payload
+import model.PayloadType
+import service.transmission.HttpService
 
 
 sealed class CommendUtil {
 
     companion object Default : CommendUtil()
 
-    fun sendCommend(commend: String, ipAddress: String = ConnectionService.getTargetIp(), callback: (Boolean) -> Unit) {
+    fun sendCommend(commendStr: String, callback: (Boolean) -> Unit) {
+        val commend = Json.encodeToString(Commend(commendStr, mapOf()))
         CoroutineScope(Dispatchers.Default).launch {
             try {
-                HttpUtil.post("http://$ipAddress:$SERVICE_PORT", commend)
+                HttpService.sendPayload(Payload(PayloadType.CONNECTION, commend))
+                callback(true)
+            } catch (e: Exception) {
+                callback(false)
+            }
+        }
+    }
+
+    fun sendCommend(commendStr: String, targetIp: String, callback: (Boolean) -> Unit) {
+        val commend = Json.encodeToString(Commend(commendStr, mapOf()))
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                HttpService.sendPayload(Payload(PayloadType.CONNECTION, commend), targetIp)
                 callback(true)
             } catch (e: Exception) {
                 callback(false)
@@ -25,22 +40,18 @@ sealed class CommendUtil {
     }
 
     fun sendCommend(
-        commend: String,
-        ipAddress: String = ConnectionService.getTargetIp(),
-        headers: Map<String, String>,
+        commendStr: String,
+        addition: Map<String, String>,
         callback: (Boolean) -> Unit
     ) {
+        val commend = Json.encodeToString(Commend(commendStr, addition))
         CoroutineScope(Dispatchers.Default).launch {
             try {
-                val createPost = HttpUtil.createPost("http://$ipAddress:$SERVICE_PORT")
-                createPost.body(commend)
-                createPost.addHeaders(headers)
-                createPost.charset(Charset.defaultCharset())
-                createPost.execute()
+                HttpService.sendPayload(Payload(PayloadType.CONNECTION, commend))
+                callback(true)
             } catch (e: Exception) {
                 callback(false)
             }
-            callback(true)
         }
     }
 }

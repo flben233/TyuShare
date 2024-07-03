@@ -84,7 +84,7 @@ fun SettingDialog(onCloseRequest: () -> Unit) {
                             // 文件设置区域
                             FileReceive()
                             // 音频设置区域
-                            Audio()
+//                            Audio()
                             // 项目地址
                             Github()
                         }
