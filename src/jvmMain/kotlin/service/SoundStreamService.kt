@@ -18,7 +18,7 @@ sealed class SoundStreamService : BidirectionalService {
 
     private var audioProcess: Process? = null
     private var audioWatcher: Thread? = null
-
+    private val resourcesDir = System.getProperty("compose.application.resources.dir")
     companion object Default : SoundStreamService()
 
     fun start(mode: String) {
@@ -37,8 +37,8 @@ sealed class SoundStreamService : BidirectionalService {
         }
         applicationSetting.soundStreamStatus.value = true
         audioProcess = if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER)
-            ProcessUtil.startProcess(".\\bin\\audio-exporter.exe", "--mode=client", "--address=${ConnectionService.getTargetIp()}")
-        else ProcessUtil.startProcess(".\\bin\\audio-exporter.exe", "--mode=server")
+            ProcessUtil.startProcess("$resourcesDir\\audio-exporter.exe", "--mode=client", "--address=${ConnectionService.getTargetIp()}")
+        else ProcessUtil.startProcess("$resourcesDir\\audio-exporter.exe", "--mode=server")
         audioWatcher = Thread {
             audioProcess!!.waitFor()
             if (applicationSetting.soundStreamStatus.value) {
