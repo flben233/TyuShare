@@ -1,4 +1,6 @@
 # 小雨妙享
+**重要提示: 1.6版本中关于键鼠共享快捷键描述有误，应为CTRL+F10，新版本已修改**
+
 ## 安装
 下载[Release](https://github.com/flben233/TyuShare/release)中的安装包进行安装即可
 
