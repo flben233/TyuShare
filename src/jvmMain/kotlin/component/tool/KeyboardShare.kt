@@ -66,7 +66,7 @@ fun KeyboardShare(modifier: Modifier) {
 
     MaterialCard(
         "键鼠共享",
-        "建议以管理员身份运行，使用F11+F12可快速切换状态",
+        "建议以管理员身份运行，使用CTRL+F10可快速切换状态",
         modifier = modifier
     ) {
         Row(
