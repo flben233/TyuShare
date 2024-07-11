@@ -1,7 +1,6 @@
 package service.listener
 
 import applicationSetting
-import cn.hutool.core.collection.ConcurrentHashSet
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
 import service.KeyboardShareService
@@ -14,7 +13,7 @@ import service.KeyboardShareService
  * @version 1.0
  */
 class HotkeyListener: NativeKeyListener {
-    private val keyCache: ConcurrentHashSet<Int> = ConcurrentHashSet()
+    private val keyCache: HashSet<Int?> = HashSet()
     private val key1 = NativeKeyEvent.VC_CONTROL
     private val key2 = NativeKeyEvent.VC_F10
     override fun nativeKeyPressed(nativeEvent: NativeKeyEvent?) {

@@ -1,7 +1,6 @@
 package service.transmission
 
-import cn.hutool.http.HttpUtil
-import cn.hutool.http.server.SimpleServer
+import com.sun.net.httpserver.HttpServer
 import config.SERVICE_PORT
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -9,12 +8,13 @@ import model.Payload
 import model.PayloadType
 import service.ClipboardShareService
 import service.ConnectionService
-import java.nio.charset.StandardCharsets
+import util.HttpUtil
+import java.net.InetSocketAddress
 
 sealed class HttpService {
     companion object Default: HttpService()
 
-    private lateinit var server: SimpleServer
+    private lateinit var server: HttpServer
     private val httpPort = SERVICE_PORT
 
     /**
@@ -22,17 +22,22 @@ sealed class HttpService {
      * @author ShirakawaTyu
      */
     fun startServer() {
-        server = HttpUtil.createServer(httpPort)
+        server = HttpServer.create()
+        server.bind(InetSocketAddress(httpPort), 0)
         Thread {
-            server.addAction("/") { request, response ->
-                val data = Json.decodeFromString<Payload>(request.body)
+            server.createContext("/").setHandler {
+                var requestBody: String
+                with(it.requestBody.reader()) {
+                    requestBody = readText()
+                }
+                val data = Json.decodeFromString<Payload>(requestBody)
                 when (data.payloadType) {
                     PayloadType.CONNECTION -> ConnectionService.handleCommend(
                         Json.decodeFromString(data.payloadJson),
-                        request.httpExchange.remoteAddress.hostString)
+                        it.remoteAddress.hostString)
                     PayloadType.CLIPBOARD -> ClipboardShareService.handleClipboard(data.payloadJson)
                 }
-                response.sendOk()
+                it.sendResponseHeaders(200, -1)
             }
             server.start()
         }.start()
@@ -40,10 +45,7 @@ sealed class HttpService {
 
     fun sendPayload(payload: Payload, targetIp: String = ConnectionService.getTargetIp()) {
         if (targetIp.isNotEmpty()) {
-            HttpUtil.createPost("http://${targetIp}:$httpPort")
-                .body(Json.encodeToString<Payload>(payload))
-                .charset(StandardCharsets.UTF_8)
-                .execute()
+            HttpUtil.post("http://${targetIp}:$httpPort", Json.encodeToString(payload))
         }
     }
 }

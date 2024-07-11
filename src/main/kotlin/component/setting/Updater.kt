@@ -9,12 +9,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cn.hutool.core.swing.DesktopUtil
-import cn.hutool.http.HttpUtil
-import cn.hutool.json.JSONUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import util.AwtUtil
+import util.HttpUtil
 
 @Composable
 fun Updater() {
@@ -22,7 +23,7 @@ fun Updater() {
     var openBrowser = false
     fun check() {
         if (openBrowser) {
-            DesktopUtil.browse("https://note.shirakawatyu.top/article/148")
+            AwtUtil.browse("https://note.shirakawatyu.top/article/148")
         } else {
             updateText.value = "正在检查..."
             CoroutineScope(Dispatchers.IO).launch {
@@ -46,9 +47,9 @@ fun Updater() {
 
 private fun checkUpdate(): Boolean {
     try {
-        val apiJson = HttpUtil.get("https://tyushare.shirakawatyu.top")
-        val jsonbObj = JSONUtil.parseObj(apiJson)
-        val version = jsonbObj["tag_name"].toString().toDouble()
+        val apiJson = HttpUtil.get("https://tyushare.shirakawatyu.top").body()
+        val jsonObj = Json.parseToJsonElement(apiJson).jsonObject
+        val version = jsonObj["tag_name"].toString().replace("\"", "").toDouble()
         println(version)
         return version > VERSION_CODE
     } catch (e: Exception) {

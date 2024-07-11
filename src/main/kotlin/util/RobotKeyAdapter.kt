@@ -4,7 +4,6 @@ import androidx.compose.ui.input.pointer.PointerButton
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.*
 import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
-import java.awt.event.MouseEvent
 
 sealed class RobotKeyAdapter {
     companion object Default: RobotKeyAdapter()

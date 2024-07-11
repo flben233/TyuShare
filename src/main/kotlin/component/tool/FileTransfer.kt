@@ -1,12 +1,14 @@
 package component.tool
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import applicationSetting
-import cn.hutool.core.io.StreamProgress
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import component.material.MaterialCard
 import service.FileTransferService
@@ -16,19 +18,19 @@ var showDialog = mutableStateOf(false)
 var totalMByte = mutableStateOf("0.00")
 var progressMByte = mutableStateOf("0.00")
 
-class FileStreamProgress(private val totalSize: Long) : StreamProgress {
+class FileStreamProgress(private val totalSize: Long) {
 
-    override fun start() {
+    fun start() {
         showDialog.value = true
     }
 
-    override fun progress(total: Long, progressSize: Long) {
+    fun progress(total: Long, progressSize: Long) {
         totalMByte.value = String.format("%.2f MB", totalSize / (1024 * 1024.0))
         progressMByte.value = String.format("%.2f MB", progressSize / (1024 * 1024.0))
         progress.value = progressSize / totalSize.toFloat()
     }
 
-    override fun finish() {
+    fun finish() {
         showDialog.value = false
     }
 }
