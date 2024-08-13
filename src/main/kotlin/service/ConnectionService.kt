@@ -46,13 +46,16 @@ sealed class ConnectionService {
     }
 
     private fun startHeart() {
+        val stopService =  {
+            targetIp = ""
+            currentView.value = Navigator.CONNECT_VIEW
+            SoundStreamService.stop()
+        }
         CoroutineScope(Dispatchers.Default).launch {
             while (true) {
                 CommendUtil.sendCommend(HttpCommend.HEART) {
                     if (!it) {
-                        targetIp = ""
-                        currentView.value = Navigator.CONNECT_VIEW
-                        SoundStreamService.stop()
+                        stopService()
                     }
                 }
                 delay(1000)

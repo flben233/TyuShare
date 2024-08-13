@@ -12,6 +12,7 @@ sealed class HttpUtil {
     fun post(url: String, requestBody: String): HttpResponse<String> {
         val request = HttpRequest.newBuilder(URI.create(url))
             .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+            .timeout(java.time.Duration.ofSeconds(3))
             .build()
         return HttpClient.newHttpClient().send(request, BodyHandlers.ofString())
     }
@@ -19,6 +20,7 @@ sealed class HttpUtil {
     fun get(url: String): HttpResponse<String> {
         val request = HttpRequest.newBuilder(URI.create(url))
             .GET()
+            .timeout(java.time.Duration.ofSeconds(3))
             .build()
         return HttpClient.newHttpClient().send(request, BodyHandlers.ofString())
     }

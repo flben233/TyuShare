@@ -24,6 +24,12 @@
   "name":"[Lcom.sun.jna.platform.win32.WinNT$PROCESSOR_GROUP_INFO;"
 },
 {
+  "name":"[Ljava.lang.String;"
+},
+{
+  "name":"[Lsun.security.pkcs.SignerInfo;"
+},
+{
   "name":"android.os.Build"
 },
 {
@@ -115,6 +121,10 @@
 },
 {
   "name":"com.sun.crypto.provider.GaloisCounterMode$AESGCM",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.HmacCore$HmacSHA384",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -553,13 +563,47 @@
   "name":"java.net.URL"
 },
 {
-  "name":"java.nio.Buffer"
+  "name":"java.nio.Buffer",
+  "allDeclaredFields":true
 },
 {
-  "name":"java.nio.ByteBuffer"
+  "name":"java.nio.ByteBuffer",
+  "allDeclaredFields":true
 },
 {
   "name":"java.nio.CharBuffer"
+},
+{
+  "name":"java.nio.DirectByteBuffer",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.nio.DirectCharBufferU",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.nio.DirectDoubleBufferU",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.nio.DirectFloatBufferU",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.nio.DirectIntBufferU",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.nio.DirectLongBufferU",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.nio.DirectShortBufferU",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.nio.MappedByteBuffer",
+  "allDeclaredFields":true
 },
 {
   "name":"java.security.AlgorithmParametersSpi"
@@ -569,6 +613,15 @@
 },
 {
   "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"java.security.interfaces.ECPrivateKey"
+},
+{
+  "name":"java.security.interfaces.ECPublicKey"
+},
+{
+  "name":"java.util.Date"
 },
 {
   "name":"java.util.List"
@@ -737,6 +790,18 @@
   "methods":[{"name":"coalesceEvents","parameterTypes":["java.awt.AWTEvent","java.awt.AWTEvent"] }]
 },
 {
+  "name":"org.lwjgl.PointerBuffer",
+  "unsafeAllocated":true
+},
+{
+  "name":"org.lwjgl.system.CustomBuffer",
+  "fields":[{"name":"capacity"}, {"name":"container"}, {"name":"limit"}, {"name":"mark"}, {"name":"position"}]
+},
+{
+  "name":"org.lwjgl.system.Pointer$Default",
+  "fields":[{"name":"address"}]
+},
+{
   "name":"oshi.jna.ByRef$CloseableHANDLEByReference",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -809,6 +874,14 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"sun.misc.Unsafe",
+  "allDeclaredFields":true
+},
+{
+  "name":"sun.reflect.misc.Trampoline",
+  "methods":[{"name":"invoke","parameterTypes":["java.lang.reflect.Method","java.lang.Object","java.lang.Object[]"] }]
+},
+{
   "name":"sun.security.pkcs12.PKCS12KeyStore",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -826,6 +899,14 @@
 },
 {
   "name":"sun.security.provider.DSA$SHA256withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$DualFormatJKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$JKS",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -850,6 +931,10 @@
 },
 {
   "name":"sun.security.provider.X509Factory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.certpath.PKIXCertPathValidator",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -881,6 +966,9 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"sun.security.util.ObjectIdentifier"
+},
+{
   "name":"sun.security.x509.AuthorityInfoAccessExtension",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
 },
@@ -895,6 +983,9 @@
 {
   "name":"sun.security.x509.CRLDistributionPointsExtension",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CertificateExtensions"
 },
 {
   "name":"sun.security.x509.CertificatePoliciesExtension",

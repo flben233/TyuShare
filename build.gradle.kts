@@ -21,7 +21,7 @@ val disableWindowsTerminal by extra(true)
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+//        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -31,7 +31,7 @@ graalvmNative {
         named("main"){
             mainClass.set("MainKt")
             imageName.set("TyuShare")
-            buildArgs("-O4", "--initialize-at-build-time=kotlin.DeprecationLevel")
+            buildArgs("-O4")
         }
     }
 
@@ -58,7 +58,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Msi)
             packageName = "TyuShare"
-            packageVersion = "2.2.2"
+            packageVersion = "2.2.3"
             description = "TyuShare"
             vendor = "ShirakawaTyu"
             includeAllModules = true
