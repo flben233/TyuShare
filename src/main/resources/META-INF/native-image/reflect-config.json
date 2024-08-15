@@ -6,16 +6,10 @@
   "name":"[C"
 },
 {
-  "name":"[Lcom.github.kwhat.jnativehook.keyboard.NativeKeyListener;"
-},
-{
   "name":"[Lcom.github.kwhat.jnativehook.mouse.NativeMouseListener;"
 },
 {
   "name":"[Lcom.github.kwhat.jnativehook.mouse.NativeMouseMotionListener;"
-},
-{
-  "name":"[Lcom.github.kwhat.jnativehook.mouse.NativeMouseWheelListener;"
 },
 {
   "name":"[Lcom.sun.jna.platform.win32.WinNT$GROUP_AFFINITY;"
@@ -52,6 +46,10 @@
   "fields":[{"name":"delegate$volatile"}]
 },
 {
+  "name":"androidx.compose.ui.awt.ComposeDialog",
+  "methods":[{"name":"coalesceEvents","parameterTypes":["java.awt.AWTEvent","java.awt.AWTEvent"] }]
+},
+{
   "name":"androidx.compose.ui.awt.ComposeWindow",
   "methods":[{"name":"coalesceEvents","parameterTypes":["java.awt.AWTEvent","java.awt.AWTEvent"] }]
 },
@@ -80,20 +78,12 @@
   "fields":[{"name":"delegate$volatile"}]
 },
 {
-  "name":"com.formdev.flatlaf.ui.FlatPanelUI",
-  "methods":[{"name":"createUI","parameterTypes":["javax.swing.JComponent"] }]
-},
-{
-  "name":"com.formdev.flatlaf.ui.FlatRootPaneUI",
-  "methods":[{"name":"createUI","parameterTypes":["javax.swing.JComponent"] }]
+  "name":"androidx.compose.ui.window.LayoutConfiguration_desktopKt",
+  "methods":[{"name":"getGlobalDensity","parameterTypes":[] }, {"name":"getGlobalLayoutDirection","parameterTypes":[] }]
 },
 {
   "name":"com.github.kwhat.jnativehook.DefaultLibraryLocator",
   "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.github.kwhat.jnativehook.NativeInputEvent",
-  "fields":[{"name":"reserved"}]
 },
 {
   "name":"com.sun.crypto.provider.AESCipher$General",
@@ -502,9 +492,6 @@
   "name":"com.sun.jna.win32.DLLCallback"
 },
 {
-  "name":"default"
-},
-{
   "name":"java.awt.Image"
 },
 {
@@ -612,9 +599,6 @@
   "name":"java.security.KeyStoreSpi"
 },
 {
-  "name":"java.security.SecureRandomParameters"
-},
-{
   "name":"java.security.interfaces.ECPrivateKey"
 },
 {
@@ -704,10 +688,6 @@
 {
   "name":"kotlinx.coroutines.channels.BufferedChannel",
   "fields":[{"name":"_closeCause$volatile"}, {"name":"bufferEnd$volatile"}, {"name":"bufferEndSegment$volatile"}, {"name":"closeHandler$volatile"}, {"name":"completedExpandBuffersAndPauseFlag$volatile"}, {"name":"receiveSegment$volatile"}, {"name":"receivers$volatile"}, {"name":"sendSegment$volatile"}, {"name":"sendersAndCloseStatus$volatile"}]
-},
-{
-  "name":"kotlinx.coroutines.flow.ChannelAsFlow",
-  "fields":[{"name":"consumed$volatile"}]
 },
 {
   "name":"kotlinx.coroutines.flow.StateFlowImpl",
@@ -862,10 +842,6 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"sun.awt.Win32FontManager",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"sun.awt.windows.WingDings",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -876,10 +852,6 @@
 {
   "name":"sun.misc.Unsafe",
   "allDeclaredFields":true
-},
-{
-  "name":"sun.reflect.misc.Trampoline",
-  "methods":[{"name":"invoke","parameterTypes":["java.lang.reflect.Method","java.lang.Object","java.lang.Object[]"] }]
 },
 {
   "name":"sun.security.pkcs12.PKCS12KeyStore",

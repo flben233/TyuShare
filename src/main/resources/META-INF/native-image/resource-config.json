@@ -5,10 +5,6 @@
   }, {
     "pattern":"\\Q/icons/more_horiz.svg\\E"
   }, {
-    "pattern":"\\QMETA-INF/services/cn.hutool.core.convert.Converter\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/com.formdev.flatlaf.FlatDefaultsAddon\\E"
-  }, {
     "pattern":"\\QMETA-INF/services/com.sun.net.httpserver.spi.HttpServerProvider\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.awt.im.spi.InputMethodDescriptor\\E"
@@ -21,23 +17,9 @@
   }, {
     "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
   }, {
-    "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
-  }, {
     "pattern":"\\QMETA-INF/services/kotlinx.coroutines.internal.MainDispatcherFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
-  }, {
-    "pattern":"\\Qcom/formdev/flatlaf/FlatLaf.properties\\E"
-  }, {
-    "pattern":"\\Qcom/formdev/flatlaf/FlatLightLaf.properties\\E"
-  }, {
-    "pattern":"\\Qcom/formdev/flatlaf/natives/flatlaf-windows-x86_64.dll\\E"
-  }, {
-    "pattern":"\\Qcom/formdev/flatlaf/resources/Bundle.properties\\E"
-  }, {
-    "pattern":"\\Qcom/formdev/flatlaf/resources/Bundle_en.properties\\E"
-  }, {
-    "pattern":"\\Qcom/formdev/flatlaf/resources/Bundle_en_US.properties\\E"
   }, {
     "pattern":"\\Qcom/github/kwhat/jnativehook/lib/windows/x86_64/JNativeHook.dll\\E"
   }, {
@@ -73,8 +55,6 @@
   }, {
     "pattern":"java.datatransfer:\\Qsun/datatransfer/resources/flavormap.properties\\E"
   }, {
-    "pattern":"java.desktop:\\Qcom/formdev/flatlaf/resources/Bundle.properties\\E"
-  }, {
     "pattern":"java.desktop:\\Qcom/sun/java/swing/plaf/windows/resources/windows_en.properties\\E"
   }, {
     "pattern":"java.desktop:\\Qcom/sun/java/swing/plaf/windows/resources/windows_en_US.properties\\E"
@@ -83,35 +63,19 @@
   }, {
     "pattern":"java.desktop:\\Qcom/sun/swing/internal/plaf/basic/resources/basic_en_US.properties\\E"
   }, {
-    "pattern":"java.desktop:\\Qjavax/swing/text/html/default.css\\E"
-  }, {
     "pattern":"java.desktop:\\Qsun/awt/resources/awt_en.properties\\E"
   }, {
     "pattern":"java.desktop:\\Qsun/awt/resources/awt_en_US.properties\\E"
-  }, {
-    "pattern":"java.desktop:\\Qsun/awt/windows/awtLocalization_en.properties\\E"
-  }, {
-    "pattern":"java.desktop:\\Qsun/awt/windows/awtLocalization_en_US.properties\\E"
   }]},
   "bundles":[{
-    "name":"com.formdev.flatlaf.resources.Bundle",
-    "locales":["en-US", "und"]
-  }, {
     "name":"com.sun.java.swing.plaf.windows.resources.windows",
-    "locales":["en-US"],
-    "classNames":["com.sun.java.swing.plaf.windows.resources.windows"]
+    "locales":["en-US"]
   }, {
     "name":"com.sun.swing.internal.plaf.basic.resources.basic",
-    "locales":["en-US"],
-    "classNames":["com.sun.swing.internal.plaf.basic.resources.basic"]
+    "locales":["en-US"]
   }, {
     "name":"sun.awt.resources.awt",
-    "locales":["en-US"],
-    "classNames":["sun.awt.resources.awt"]
-  }, {
-    "name":"sun.awt.windows.awtLocalization",
-    "locales":["en-US"],
-    "classNames":["sun.awt.windows.awtLocalization"]
+    "locales":["en-US"]
   }, {
     "name":"sun.text.resources.FormatData",
     "locales":["en", "en-US", "und"]

@@ -17,7 +17,7 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
-val disableWindowsTerminal by extra(true)
+//val disableWindowsTerminal by extra(false)
 
 java {
     toolchain {
@@ -31,7 +31,7 @@ graalvmNative {
         named("main"){
             mainClass.set("MainKt")
             imageName.set("TyuShare")
-            buildArgs("-O4")
+            buildArgs("-O4", "-H:+AddAllCharsets")
         }
     }
 
@@ -50,6 +50,7 @@ dependencies {
     implementation("com.github.oshi:oshi-core:6.6.1")
     implementation("com.darkrockstudios:mpfilepicker:2.0.2")
     implementation("com.github.kwhat:jnativehook:2.2.2")
+    implementation("com.dorkbox:SystemTray:4.4")
 }
 
 compose.desktop {

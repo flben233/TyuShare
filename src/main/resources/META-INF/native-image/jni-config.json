@@ -141,18 +141,9 @@
   "methods":[{"name":"<init>","parameterTypes":["int","int"] }]
 },
 {
-  "name":"java.awt.Event",
-  "fields":[{"name":"target"}, {"name":"x"}, {"name":"y"}]
-},
-{
   "name":"java.awt.Font",
   "fields":[{"name":"name"}, {"name":"pData"}, {"name":"size"}, {"name":"style"}],
-  "methods":[{"name":"getFont","parameterTypes":["java.lang.String"] }, {"name":"getFontPeer","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }]
-},
-{
-  "name":"java.awt.FontMetrics",
-  "fields":[{"name":"font"}],
-  "methods":[{"name":"getHeight","parameterTypes":[] }]
+  "methods":[{"name":"getFont","parameterTypes":["java.lang.String"] }, {"name":"getFontPeer","parameterTypes":[] }]
 },
 {
   "name":"java.awt.Frame",
@@ -164,25 +155,9 @@
   "methods":[{"name":"<init>","parameterTypes":["int","int","int","int"] }]
 },
 {
-  "name":"java.awt.Menu",
-  "methods":[{"name":"countItemsImpl","parameterTypes":[] }, {"name":"getItemImpl","parameterTypes":["int"] }]
-},
-{
-  "name":"java.awt.MenuComponent",
-  "methods":[{"name":"getFont_NoClientCode","parameterTypes":[] }]
-},
-{
-  "name":"java.awt.MenuItem",
-  "fields":[{"name":"enabled"}, {"name":"label"}]
-},
-{
   "name":"java.awt.Point",
   "fields":[{"name":"x"}, {"name":"y"}],
   "methods":[{"name":"<init>","parameterTypes":["int","int"] }]
-},
-{
-  "name":"java.awt.PopupMenu",
-  "fields":[{"name":"isTrayIconPopup"}]
 },
 {
   "name":"java.awt.Rectangle",
@@ -235,10 +210,6 @@
   "methods":[{"name":"<init>","parameterTypes":["java.awt.Component","int","long","int","int","int","int","int","int","boolean","int"] }]
 },
 {
-  "name":"java.awt.event.MouseWheelEvent",
-  "methods":[{"name":"<init>","parameterTypes":["java.awt.Component","int","long","int","int","int","int","int","int","boolean","int","int","int","double"] }]
-},
-{
   "name":"java.awt.geom.AffineTransform",
   "fields":[{"name":"m00"}, {"name":"m01"}, {"name":"m02"}, {"name":"m10"}, {"name":"m11"}, {"name":"m12"}]
 },
@@ -271,7 +242,7 @@
 },
 {
   "name":"java.awt.image.ColorModel",
-  "fields":[{"name":"colorSpace"}, {"name":"colorSpaceType"}, {"name":"isAlphaPremultiplied"}, {"name":"is_sRGB"}, {"name":"nBits"}, {"name":"numComponents"}, {"name":"pData"}, {"name":"supportsAlpha"}, {"name":"transparency"}],
+  "fields":[{"name":"colorSpace"}, {"name":"colorSpaceType"}, {"name":"isAlphaPremultiplied"}, {"name":"is_sRGB"}, {"name":"nBits"}, {"name":"numComponents"}, {"name":"supportsAlpha"}, {"name":"transparency"}],
   "methods":[{"name":"getRGBdefault","parameterTypes":[] }]
 },
 {
@@ -682,10 +653,6 @@
   "methods":[{"name":"disposeLater","parameterTypes":[] }, {"name":"handleExpose","parameterTypes":["int","int","int","int"] }, {"name":"postEvent","parameterTypes":["java.awt.AWTEvent"] }, {"name":"replaceSurfaceData","parameterTypes":[] }, {"name":"replaceSurfaceDataLater","parameterTypes":[] }]
 },
 {
-  "name":"sun.awt.windows.WDefaultFontCharset",
-  "fields":[{"name":"fontName"}]
-},
-{
   "name":"sun.awt.windows.WDesktopPeer",
   "methods":[{"name":"systemSleepCallback","parameterTypes":["boolean"] }, {"name":"userSessionCallback","parameterTypes":["boolean","java.awt.desktop.UserSessionEvent$Reason"] }]
 },
@@ -693,6 +660,9 @@
   "name":"sun.awt.windows.WDesktopProperties",
   "fields":[{"name":"pData"}],
   "methods":[{"name":"setBooleanProperty","parameterTypes":["java.lang.String","boolean"] }, {"name":"setColorProperty","parameterTypes":["java.lang.String","int","int","int"] }, {"name":"setFontProperty","parameterTypes":["java.lang.String","java.lang.String","int","int"] }, {"name":"setIntegerProperty","parameterTypes":["java.lang.String","int"] }, {"name":"setSoundProperty","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"setStringProperty","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
+  "name":"sun.awt.windows.WDialogPeer"
 },
 {
   "name":"sun.awt.windows.WFontPeer",
@@ -705,11 +675,6 @@
 {
   "name":"sun.awt.windows.WGlobalCursorManager",
   "methods":[{"name":"nativeUpdateCursor","parameterTypes":["java.awt.Component"] }]
-},
-{
-  "name":"sun.awt.windows.WMenuItemPeer",
-  "fields":[{"name":"isCheckbox"}, {"name":"shortcutLabel"}],
-  "methods":[{"name":"getDefaultFont","parameterTypes":[] }, {"name":"handleAction","parameterTypes":["long","int"] }]
 },
 {
   "name":"sun.awt.windows.WObjectPeer",
@@ -742,20 +707,8 @@
   "methods":[{"name":"canDisplay","parameterTypes":["char"] }, {"name":"charToGlyph","parameterTypes":["int"] }, {"name":"charToVariationGlyph","parameterTypes":["int","int"] }, {"name":"getMapper","parameterTypes":[] }, {"name":"getTableBytes","parameterTypes":["int"] }]
 },
 {
-  "name":"sun.font.FontDesignMetrics",
-  "methods":[{"name":"getHeight","parameterTypes":[] }]
-},
-{
   "name":"sun.font.FontStrike",
   "methods":[{"name":"getGlyphMetrics","parameterTypes":["int"] }]
-},
-{
-  "name":"sun.font.FontUtilities",
-  "methods":[{"name":"debugFonts","parameterTypes":[] }]
-},
-{
-  "name":"sun.font.FreetypeFontScaler",
-  "methods":[{"name":"invalidateScaler","parameterTypes":[] }]
 },
 {
   "name":"sun.font.GlyphList",
