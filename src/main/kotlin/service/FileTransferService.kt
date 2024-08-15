@@ -1,18 +1,18 @@
 package service
 
-import androidx.compose.ui.window.Notification
 import applicationSetting
 import common.HttpCommend
 import component.tool.FileStreamProgress
+import component.tray.TRAY
 import config.SERVICE_PORT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import tray
 import util.CommendUtil
 import util.IoUtil
+import java.awt.TrayIcon
 import java.io.*
 import java.net.ServerSocket
 import java.net.Socket
@@ -49,7 +49,7 @@ sealed class FileTransferService {
                 fileIn = FileInputStream(filePath)
                 IoUtil.copy(fileIn, outputStream, 4096, FileStreamProgress(file.length()))
             } catch (e: Exception) {
-                tray.sendNotification(Notification("文件传输", "文件发送失败"))
+                TRAY.displayMessage("文件传输", "文件发送失败", TrayIcon.MessageType.ERROR)
                 return@launch
             } finally {
                 outputStream?.close()
@@ -57,7 +57,7 @@ sealed class FileTransferService {
                 fileIn?.close()
                 server?.close()
             }
-            tray.sendNotification(Notification("文件传输", "文件${file.name}发送完成"))
+            TRAY.displayMessage("文件传输", "文件${file.name}发送完成", TrayIcon.MessageType.INFO)
         }
         val headers = HashMap<String, String>()
         headers["File-Name"] = Json.encodeToString(file.name.toByteArray(StandardCharsets.UTF_8))
@@ -88,7 +88,7 @@ sealed class FileTransferService {
                 inputStream = client.getInputStream()
                 IoUtil.copy(inputStream, dest, 4096, FileStreamProgress(fileSize))
             } catch (e: Exception) {
-                tray.sendNotification(Notification("文件传输", "文件接收失败"))
+                TRAY.displayMessage("文件传输", "文件接收失败", TrayIcon.MessageType.ERROR)
                 file.delete()
                 return@launch
             } finally {
@@ -96,7 +96,7 @@ sealed class FileTransferService {
                 inputStream?.close()
                 client.close()
             }
-            tray.sendNotification(Notification("文件传输", "文件已保存至${applicationSetting.fileReceivePath.value}"))
+            TRAY.displayMessage("文件传输", "文件已保存至${applicationSetting.fileReceivePath.value}", TrayIcon.MessageType.INFO)
         }
     }
 

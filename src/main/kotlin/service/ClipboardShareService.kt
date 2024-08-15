@@ -1,17 +1,17 @@
 package service
 
-import androidx.compose.ui.window.Notification
 import applicationSetting
 import common.HttpCommend
+import component.tray.TRAY
 import kotlinx.coroutines.*
 import model.Payload
 import model.PayloadType
 import service.interfaces.BidirectionalService
 import service.transmission.HttpService
-import tray
 import util.ClipboardUtil
 import util.CommendUtil
 import util.LoggerUtil
+import java.awt.TrayIcon
 
 
 /**
@@ -68,7 +68,7 @@ sealed class ClipboardShareService: BidirectionalService {
     fun handleClipboard(clipboard: String) {
         if (clipboard != ClipboardUtil.getStr() && clipboard.isNotEmpty()) {
             ClipboardUtil.setStr(clipboard)
-            tray.sendNotification(Notification("剪贴板", clipboard))
+            TRAY.displayMessage("剪贴板", clipboard, TrayIcon.MessageType.NONE)
         }
     }
 

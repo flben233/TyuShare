@@ -28,6 +28,7 @@ val layout: Class<*> = Class.forName("androidx.compose.ui.window.LayoutConfigura
 val globalDensity = layout.getMethod("getGlobalDensity").invoke(null) as Density
 val globalLayoutDirection = layout.getMethod("getGlobalLayoutDirection").invoke(null) as LayoutDirection
 val showMenu = mutableStateOf(false)
+lateinit var TRAY: TrayIcon
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -56,6 +57,7 @@ fun ComposeTray(
         if (tray.image != awtIcon) tray.image = awtIcon
         if (tray.toolTip != tooltip) tray.toolTip = tooltip
     }
+
     DisposableEffect(Unit) {
         tray.addMouseListener(object : MouseAdapter() {
             override fun mouseReleased(e: MouseEvent) {
@@ -74,6 +76,7 @@ fun ComposeTray(
             }
         })
         SystemTray.getSystemTray().add(tray)
+        TRAY = tray
         onDispose {
             SystemTray.getSystemTray().remove(tray)
         }
