@@ -2,7 +2,12 @@
 ## 安装
 下载[Release](https://github.com/flben233/TyuShare/release)中的安装包进行安装即可
 
-~~安装[VB-Cable](https://vb-audio.com/Cable/)音频驱动，音频共享用到了这个 (不需要了)~~
+### Native编译环境
+
+| 名称 | 版本 |
+| - | - |
+GraalVM | GraalVM CE 22.0.2+9.1
+Visual Studio | 2022
 
 ### 更新提示
 
