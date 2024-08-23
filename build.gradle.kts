@@ -31,7 +31,7 @@ graalvmNative {
         named("main"){
             mainClass.set("MainKt")
             imageName.set("TyuShare")
-            buildArgs("-O4", "-H:+AddAllCharsets")
+            buildArgs("-O4", "-H:+AddAllCharsets", "--no-fallback")
         }
     }
 

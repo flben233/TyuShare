@@ -31,6 +31,8 @@
   }, {
     "pattern":"\\Qicons/more_horiz.svg\\E"
   }, {
+    "pattern":"\\Qicudtl.dat\\E"
+  }, {
     "pattern":"\\Qjelly-no-connection.png\\E"
   }, {
     "pattern":"\\Qlwjgl.dll.sha1\\E"
@@ -42,6 +44,8 @@
     "pattern":"\\Qoshi.properties\\E"
   }, {
     "pattern":"\\Qskiko-windows-x64.dll.sha256\\E"
+  }, {
+    "pattern":"\\Qskiko-windows-x64.dll\\E"
   }, {
     "pattern":"\\Qwindows/x64/org/lwjgl/lwjgl.dll\\E"
   }, {

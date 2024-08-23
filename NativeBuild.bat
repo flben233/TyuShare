@@ -7,5 +7,4 @@ mkdir .\build\native\nativeCompile\bin
 copy .\build\native\nativeCompile\*.dll .\build\native\nativeCompile\bin
 copy .\bin\windows\audio-exporter.exe .\build\native\nativeCompile\bin
 call 7z a -tzip .\build\native\nativeCompile\TyuShare_Native_Windows.zip .\build\native\nativeCompile\*
-echo "Build Done"
-pause
+echo Build finished. The artifact is in .\build\native\nativeCompile\TyuShare_Native_Windows.zip

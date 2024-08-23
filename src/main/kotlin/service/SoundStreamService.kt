@@ -55,7 +55,7 @@ sealed class SoundStreamService : BidirectionalService {
     override fun sendCommendAndStart() {
         val mode = if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER) "1"
         else "0"
-        if (applicationSetting.soundStreamMode.value == SoundStreamMode.LISTENER) {
+        if (mode == "1") {
             CommendUtil.sendCommend(HttpCommend.START_SOUND, mapOf("Mode" to mode)) {
                 if (it) {
                     start()
